@@ -86,7 +86,7 @@ Dengan semua manfaat ini, LiteraLink dapat menjadi alat yang efektif dalam memer
         <td>Admin dapat mengatur venue mana sajakah yang telah menjalin kerja sama dengan Literalink, baik itu menambahkan venua maupun mengurangi venue</td>
       </tr>
       <tr>
-        <td>DimanaManaAda</td>
+        <td>DimanaSajaKapanSaja</td>
         <td>Pengguna dapat datang di salah satu lokasi station dan melakukan peminjaman buku dan juga melakukan pengembalian buku</td>
         <td>Admin dapat mengatur apakah suatu station memiliki status aktif atau tidak, serta dapat melihat histori peminjaman buku.</td>
       </tr>
