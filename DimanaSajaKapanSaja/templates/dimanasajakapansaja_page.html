@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block meta %}
+<style>
+
+</style>
+        
+{% endblock meta %}
+
+{% block content %}
+
+<h1>DimanaSajaKapanSaja</h1>
+
+{% for station in stations %}
+<div>
+    {{station.name}}
+    <a href="{% url 'dimanasajakapansaja:del_station' station.pk %}">
+        <button>
+            HAPUS
+        </button>
+    </a>
+    <a href="{% url 'dimanasajakapansaja:edit_station' station.pk %}">
+        <button>
+            EDIT
+        </button>
+    </a>
+</div>
+<div>{{station.address}}</div>
+<div>{{station.opening_hours}}</div>
+<div>{{station.rentable}}</div>
+<div>{{station.returnable}}</div>
+<img src="{{ station.map_location.url }}" alt="{{ station.name }}" style="width: 300px; height: 300px;">
+<br>
+{% endfor %}
+<br>
+<div>
+    <a href="{% url 'dimanasajakapansaja:add_station' %}">
+        <button>
+            Tambah Station
+        </button>
+    </a>
+</div>
+
+{% endblock content %}
