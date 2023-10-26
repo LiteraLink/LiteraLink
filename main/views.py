@@ -22,15 +22,23 @@ def seeding_data(request):
     # Satu URL berisi 40 buku
     api_urls = [
         f'https://www.googleapis.com/books/v1/volumes?q=top+books&maxResults=40&startIndex={i * 40}&key={API_KEY}' # Menggunakan startIndex untuk mengambil 40 buku lainnya
-        for i in range(25)
+        for i in range(6)
     ]
-
+    count = 0
     for url in api_urls:
+
+        if count == 100:
+                break
+
         response = requests.get(url)
         data = response.json()  
         items = data.get('items')
 
         for item in items:
+
+            if count == 100:
+                break
+
             book_volume_info = item.get("volumeInfo") # Mengambil data dari list volume info
 
             book_id = item.get("id") if item.get("id") is not None else "None"
@@ -58,6 +66,7 @@ def seeding_data(request):
 
             book = Book(bookID = book_id, title = book_title, authors = author, display_authors = display_author, description = description, thumbnail = thumbnail, categories = category)
             book.save()
+            count+=1
 
     return JsonResponse(items, safe=False)
 
@@ -70,5 +79,3 @@ def flush(request):
 def show_json(request):
     data = Book.objects.all()
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
-
-
