@@ -7,9 +7,10 @@ app_name = 'dimanasajakapansaja'
 
 urlpatterns = [
     path('', views.show_station, name="show_station"),
-    path('distribute/<int:station_id>/', views.distribute_book, name="distribute"),
+    # path('distribute/<int:station_id>/', views.distribute_book, name="distribute"),
     path('flush/', views.flush, name='flush'),
     path('add_station/', views.add_station, name='add_station'),
     path('del_station/<int:station_id>/', views.del_station, name='del_station'),
     path('edit_station/<int:station_id>/', views.edit_station, name='edit_station'),
+    path('detail/<int:station_id>/', views.show_station_detail, name='detail'),
 ]
