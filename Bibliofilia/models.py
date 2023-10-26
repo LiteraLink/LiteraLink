@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
+
 
 # Create your models here.
 class Forum (models.Model):
@@ -9,6 +11,12 @@ class Forum (models.Model):
     bookPicture = models.ImageField(upload_to='reviewimages/')
     userReview = models.TextField()
     dateOfPosting = models.DateField(auto_now_add=True)
+
+class ForumReply(models.Model):
+    forum = models.ForeignKey(Forum, on_delete=models.CASCADE, related_name='replies')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.TextField()
+    timestamp = models.DateTimeField(default=timezone.now)
 
 class Message(models.Model):
     sender = models.ForeignKey(Forum, on_delete=models.CASCADE)

@@ -34,6 +34,10 @@
                                 <label for="forumsDescription" class="col-form-label">Description:</label>
                                 <textarea class="form-control" id="forumsDescription" name="forumsDescription"></textarea>
                             </div>
+                            <div class="mb-3">
+                                <label for="userReview" class="col-form-label">Message:</label>
+                                <textarea class="form-control" id="userReview" name="userReview"></textarea>
+                            </div>
                             <!-- <div class="mb-3">
                                 <label for="bookPicture" class="col-form-label">Description:</label>
                                 <input type="file" id="bookPicture" name="bookPicture" accept="image/*">
@@ -76,15 +80,17 @@
         <tr style="text-align: center;">
             <th>Forum Name</th>
             <th>description</th>
+            <th>Posted Date</th>
             <th>DEBUG</th>
         </tr>
         `
         Forums.forEach((forum) => {
             htmlString += `
             
-            <tr onclick ="window.location='childforum.html?forum_id=${forum.pk}';">
-                <td>${forum.fields.BookName}</td>
-                <td>${forum.fields.forumsDescription}</td>
+            <tr>
+                <td onclick ="window.location='forum/${forum.pk}/';" >${forum.fields.BookName}</td>
+                <td onclick ="window.location='forum/${forum.pk}/';">${forum.fields.forumsDescription}</td>
+                <td onclick ="window.location='forum/${forum.pk}/';" >${forum.fields.dateOfPosting}</td>
                 <td>
                     <div class="display-btn">
                         <a>

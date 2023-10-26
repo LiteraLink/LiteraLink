@@ -28,22 +28,20 @@ def showForum(request):
     return render(request, "mainforum.html", context)
 
 @login_required(login_url='auth:signin')
-def showChildForum(request):
-    forum_id = request.GET.get('forum_id', None)  # Get the forum_id from the query parameters
+def showChildForum(request, forum_id):
     if forum_id is not None:
         try:
             forum = Forum.objects.get(pk=forum_id)
-            # lowest_message = Message.objects.filter(forum=forum).order_by('id').first()
+            forum_head_msg = forum.userReview 
         except Forum.DoesNotExist:
             return HttpResponseNotFound("Forum not found")
 
         context = {
             'forum_id': forum_id,
+            'forum_head_msg': forum_head_msg,
             'name': request.user.username,
             'forum': forum,
-
         }
-
         return render(request, "childforum.html", context)
     else:
          return HttpResponse('Invalid request. Forum ID not provided.')
@@ -134,10 +132,11 @@ def add_Forum_ajax(request):
         BookName = request.POST.get("BookName")
         bookPicture = request.POST.get("bookPicture")
         forumsDescription = request.POST.get("forumsDescription")
+        userReview = request.POST.get("userReview")    
         user = request.user
 
-        new_product = Forum(BookName=BookName,bookPicture=bookPicture ,forumsDescription=forumsDescription, user=user)
-        new_product.dateOfPosting = timezone.now()
+        new_product = Forum(BookName=BookName,bookPicture=bookPicture,userReview=userReview,forumsDescription=forumsDescription, user=user)
+        
         new_product.save()
 
         return HttpResponse(b"CREATED", status=201)
