@@ -6,7 +6,9 @@ from django.urls import reverse
 from django.core import serializers
 from Antar.models import Person, Books
 from main.models import Book
+from Antar.forms import ProductForm
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 
 # menampilan list-list buku yang akan di pesan user
 def show_list_books(request):
@@ -20,9 +22,15 @@ def show_list_checkout(request):
     persons = Person.objects.all()
     return render(request, 'checkout.html', {'persons': persons})
 
+
 def pemesanan(request,id):
     books = Book.objects.get(pk=id)
-    return render(request,'pesan.html',{'books': books})
+    form = ProductForm
+    context = {
+        'id_buku': id,
+        'form': form
+    }
+    return render(request,'pesan.html',context)
 
 
 def get_product_json(request):
@@ -67,39 +75,27 @@ def show_json_by_id(request, id):
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
 
 @csrf_exempt
-def pesan_buku_ajax(request, book_id):
-    buku = Book.objects.get(id=book_id)
+def pesan_buku_ajax(request, id_buku):
+    buku=Book.objects.get(pk=id_buku)
+
     if request.method == 'POST':
         nama_lengkap = request.POST.get("nama_lengkap")
         nomor_telepon = request.POST.get("nomor_telepon")
         alamat_pengiriman = request.POST.get("alamat_pengiriman")
         jumlah_buku_dipesan = request.POST.get("jumlah_buku_dipesan")
         durasi_peminjaman = request.POST.get("durasi_peminjaman")
-        user = request.user
 
         # Hitung total_payment
         harga_per_unit = 5000  # Ganti dengan harga per unit yang sesuai
         ongkos_kirim = 12000
         total_payment = ongkos_kirim + (int(durasi_peminjaman) * harga_per_unit)
 
-        new_product = Person(buku_dipesan=buku, nama_lengkap=nama_lengkap, alamat_pengiriman=alamat_pengiriman,total_payment=total_payment, 
+        new_product = Person(nama_buku_dipesan=buku.title, nama_lengkap=nama_lengkap, alamat_pengiriman=alamat_pengiriman,total_payment=total_payment, 
                             nomor_telepon=nomor_telepon,jumlah_buku_dipesan=jumlah_buku_dipesan,durasi_peminjaman=durasi_peminjaman,
-                            status_pesanan="Dalam Pengiriman", waktu_pengiriman = timedelta(hours=2), user=user)
+                            status_pesanan="Dalam Pengiriman", waktu_pengiriman = timedelta(hours=2))
         new_product.save()
 
-        context = {
-            'user': user,  # Jika Anda ingin menampilkan informasi pengguna
-            'nama_lengkap': nama_lengkap,
-            'nomor_telepon': nomor_telepon,
-            'alamat_pengiriman': alamat_pengiriman,
-            'nama_buku_dipesan': buku.title,
-            'jumlah_buku_dipesan': jumlah_buku_dipesan,
-            'status_pesanan': "Dalam Pengiriman",  # Jika Anda ingin menampilkan status pesanan
-            'waktu_pengiriman' : "2 Jam"
-        }
-
-        # Kemudian, render tampilan HTML dengan konteks
-        return render(request, 'checkout.html', context)
+        return HttpResponseRedirect(reverse('antar:show_list_checkout'))
 
 
     return HttpResponseNotFound()

@@ -109,9 +109,11 @@
 </div>
 <br>
 <div class="container-fluid" style="margin-bottom: 20px;max-width: 600px;">
+  <form id="form" onsubmit="return false;">
+    {% csrf_token %}
     <div class="mb-3">
         <label for="nama_lengkap" class="col-form-label">Nama Lengkap:</label>
-        <input type="text" class="form-control col-md-6" id="nama_lengkap" name="nama_lengkap">
+        {{form.nama_lengkap}}
     </div>
     <div class="mb-3">
         <label for="nomor_telepon" class="col-form-label">Nomor Telepon:</label>
@@ -122,8 +124,8 @@
         <textarea class="form-control col-md-6" id="alamat_pengiriman" name="alamat_pengiriman"></textarea>
     </div>
     <div class="mb-3">
-        <label for="jumlah_buku" class="col-form-label">Jumlah:</label>
-        <input type="number" class="form-control col-md-6" id="jumlah_buku" name="jumlah_buku">
+        <label for="jumlah_buku_dipesan" class="col-form-label">Jumlah:</label>
+        <input type="number" class="form-control col-md-6" id="jumlah_buku_dipesan" name="jumlah_buku_dipesan">
     </div>
     <div class="mb-3">
         <label for="durasi_peminjaman" class="col-form-label">Durasi Peminjaman:</label>
@@ -132,15 +134,16 @@
             <span class="input-group-text" style="color: #0B7377;">hari</span>
         </div>
     </div>
-    <div class="container">
-        <a href="{% url 'antar:show_list_books' %}">
-            <button type="button" class="btn custom-button" type="button">Kembali</button>
-          </a>
-        <!-- <button type="reset" class="custom-button" style="margin-right: 10px; margin-left: 10px;">Reset</button> -->
-    </div>
-    <div class="container">
-        <button type="button" class="custom-button"id="button_add">Antar Sekarang</button>
-    </div>
+  </form>
+  <div class="container">
+      <a href="{% url 'antar:show_list_books' %}">
+          <button type="button" class="btn custom-button" type="button">Kembali</button>
+        </a>
+      <!-- <button type="reset" class="custom-button" style="margin-right: 10px; margin-left: 10px;">Reset</button> -->
+  </div>
+  <div class="container">
+      <button type="button" class="btn custom-button" id="button_add">Antar Sekarang</button>
+  </div>
 </div>
 
 <script>
@@ -153,32 +156,33 @@
         refreshProducts();
     }
 
-    function addProduct() {
-        fetch("/antar-buku-ajax/", {
-            method: "POST",
-            body: new FormData(document.querySelector('#form'))
-        })
-        .then(response => {
-            if (response.ok) {
-                // Refresh daftar produk setelah produk berhasil ditambahkan.
-                refreshProducts();
-            } else {
-                // Tangani kesalahan jika permintaan gagal.
-                console.error("Gagal menambahkan produk.");
-            }
-        })
-        .catch(error => {
-            console.error("Terjadi kesalahan: " + error);
-        });
+    function addProduct(id_buku) {
+      fetch(`/antar/antar-buku-ajax/${id_buku}`, {
+        method: "POST",
+        body: new FormData(document.querySelector('#form'))
+      })
+      .then(response => {
+        if (response.ok) {
+          // Redirect setelah produk berhasil ditambahkan
+          window.location.href = "{% url 'antar:show_list_checkout' %}";
+        } else {
+          // Tangani kesalahan jika permintaan gagal.
+          console.error("Gagal menambahkan produk.");
+        }
+      })
+      .catch(error => {
+        console.error("Terjadi kesalahan: " + error);
+      });
 
-        document.getElementById("form").reset();
-        return false;
+      document.getElementById("form").reset();
+      return false;
     }
 
     // Tambahkan event listener untuk memanggil addProduct saat tombol diklik.
-    document.getElementById("button_add").addEventListener("click", addProduct);
+    document.getElementById("button_add").addEventListener("click", function() {
+      addProduct({{ id_buku }});
+    });
 
 
-    refreshProducts()
 </script>
 {% endblock content %}
