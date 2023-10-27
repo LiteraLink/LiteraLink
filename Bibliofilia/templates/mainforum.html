@@ -77,16 +77,19 @@
         <tr style="text-align: center;">
             <th>Forum Name</th>
             <th>description</th>
+            <th>replies Count</th>
             <th>Posted Date</th>
             <th>DEBUG</th>
         </tr>
         `
         Forums.forEach((forum) => {
+            console.log(forum)
             htmlString += `
             
             <tr>
                 <td onclick ="window.location='forum/${forum.pk}/';" >${forum.fields.BookName}</td>
-                <td onclick ="window.location='forum/${forum.pk}/';">${forum.fields.forumsDescription}</td>
+                <td onclick ="window.location='forum/${forum.pk}/';" >${forum.fields.forumsDescription}</td>
+                <td onclick ="window.location='forum/${forum.pk}/';" >${forum}</td>
                 <td onclick ="window.location='forum/${forum.pk}/';" >${forum.fields.dateOfPosting}</td>
                 <td>
                     <div class="display-btn">

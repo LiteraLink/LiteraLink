@@ -10,15 +10,15 @@
         <div class = brand>
             <h3>Welcome to Bibliofilia</h3> 
             <h5> {{ forum_title }} </h5>
-            <h5> {{forum_head_msg}} </h5>
-            <h5> {{forum_id}} </h5>
+            <h5> {{ forum_head_msg }} </h5>
+            <h5> {{ forum_id }} </h5>
         </div>
     </nav>
 
     <div class="content">
-      
-
-        <table id="list_of_replies"></table>
+        <div class="row" id="list_of_replies">
+            <!-- Replies will be displayed here as cards -->
+        </div>
  
         <div class="modal fade" id="staticBackdrop" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -34,11 +34,6 @@
                                 <label for="text" class="col-form-label">Replies:</label>
                                 <textarea class="form-control" id="text" name="text"></textarea>
                             </div>
-                            {% comment %} <div class="mb-3">
-                                <label for="pictureReplies" class="col-form-label">Description:</label>
-                                <input type="file" id="pictureReplies" name="pictureReplies" accept="image/*">
-                                <input type="submit">
-                            </div> {% endcomment %}
                         </form>
                     </div>
                     <div class="modal-footer">
@@ -58,42 +53,43 @@
 </body>
 
 <script>
+    const main_forum_id = {{ forum.id }};
     async function getForumsReplies() {
-        return fetch("{% url 'bibliofilia:get_ForumReply_json' %}").then((res) => res.json())
+        return fetch(`{% url 'bibliofilia:get_ForumReply_json' %}`)
+            .then((res) => res.json());
     }
-    
     async function refreshForums() {
-
-        
         document.getElementById("list_of_replies").innerHTML = "";
         const ForumsReplies = await getForumsReplies(); // Use the correct variable name
-
-        let htmlString = `
-            <tr style="text-align: center;">
-                <th>User:</th>
-                <th>Reply Text:</th>
-                <th>Timestamp:</th>
-            </tr>
-        `;
-
-        ForumsReplies.forEach((reply) => { // Use the correct variable name
-            console.log(reply.fields);
-            htmlString += `
-                <tr>
-                    <td>${reply.fields.username}</td>
-                    <td>${reply.fields.text}</td>
-                    <td>${reply.fields.timestamp}</td>
-                </tr>
-            `;
+        
+        ForumsReplies.forEach((reply) => {
+            console.log(reply)
+            if (reply.fields.forum == main_forum_id) {
+                // Create a card element
+                const card = document.createElement("div");
+                card.className = "col-md-4 mb-4"; // Adjust the class as needed
+    
+                // Create the card content
+                card.innerHTML = `
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">${reply.fields.username}</h5>
+                            <p class="card-text">${reply.fields.text}</p>
+                        </div>
+                        <div class="card-footer">${reply.fields.timestamp}</div>
+                    </div>
+                `;
+    
+                // Append the card to the list_of_replies
+                document.getElementById("list_of_replies").appendChild(card);
+            }
         });
-
-        document.getElementById("list_of_replies").innerHTML = htmlString;
     }
 
     refreshForums();
 
     function addReplies(forum_id) {
-        console.log("forum_id:", forum_id);
+        {% comment %} console.log("forum_id:", forum_id); {% endcomment %}
     
         // Append the forum_id as a query parameter to the URL
         const url = `{% url 'bibliofilia:add_replies_ajax' %}?forum_id=${forum_id}`;
@@ -118,6 +114,7 @@
 
     document.getElementById("button_add").onclick = function() {
         addReplies({{ forum.id }});
+        refreshForums( main_forum_id );
     };
 
     const myModal = new bootstrap.Modal(document.getElementById("staticBackdrop"));

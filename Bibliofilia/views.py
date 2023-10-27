@@ -1,7 +1,8 @@
 import datetime
+from django.db.models import Count
 from django.utils import timezone
 from django.shortcuts import render
-from Bibliofilia.forms import *
+from Bibliofilia.forms import BibliofiliaForm
 from Bibliofilia.models import *
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render, redirect
@@ -16,13 +17,10 @@ from django.views.decorators.csrf import csrf_exempt
 
 @login_required(login_url='auth:signin')
 def showForum(request):
-    forum = Forum.objects.all()
-
+    forum = Forum.objects.annotate(replies_count=Count('replies'))
     context = {
         'name': request.user.username,
-        'Forum' : forum,
-        # 'total_Forums' : len(Forums),
-        # 'last_login': request.COOKIES['last_login'],
+        'forum': forum, 
     }
 
     return render(request, "mainforum.html", context)
@@ -157,7 +155,7 @@ def add_replies_ajax(request):
         text = request.POST.get("text")
         user = request.user
         forum_id = request.GET.get("forum_id")  # Use request.GET to access query parameters
-
+        print(forum_id)
         # Get the specific Forum instance based on the provided forum_id
         forum = get_object_or_404(Forum, id=forum_id)
 

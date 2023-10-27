@@ -10,6 +10,7 @@ class Forum (models.Model):
     forumsDescription = models.CharField(max_length=255)
     bookPicture = models.ImageField(upload_to='reviewimages/')
     userReview = models.TextField()
+    repliesTotal = models.IntegerField()
     dateOfPosting = models.DateField(auto_now_add=True)
 
 class ForumReply(models.Model):
