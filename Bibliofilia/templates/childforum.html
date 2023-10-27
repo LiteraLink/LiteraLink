@@ -9,15 +9,16 @@
     <nav class = wrap>
         <div class = brand>
             <h3>Welcome to Bibliofilia</h3> 
-            <h5> {{ name }} </h5>
+            <h5> {{ forum_title }} </h5>
             <h5> {{forum_head_msg}} </h5>
+            <h5> {{forum_id}} </h5>
         </div>
     </nav>
 
     <div class="content">
       
 
-        <table id="list_of_forms"></table>
+        <table id="list_of_replies"></table>
  
         <div class="modal fade" id="staticBackdrop" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -30,22 +31,14 @@
                         <form id="form" onsubmit="return false;">
                             {% csrf_token %}
                             <div class="mb-3">
-                                <label for="BookName" class="col-form-label">Forum Topic:</label>
-                                <input type="text" class="form-control" id="BookName" name="BookName"></input>
+                                <label for="text" class="col-form-label">Replies:</label>
+                                <textarea class="form-control" id="text" name="text"></textarea>
                             </div>
-                            <div class="mb-3">
-                                <label for="forumsDescription" class="col-form-label">Description:</label>
-                                <textarea class="form-control" id="forumsDescription" name="forumsDescription"></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label for="userReview" class="col-form-label">Message:</label>
-                                <textarea class="form-control" id="userReview" name="userReview"></textarea>
-                            </div>
-                            <!-- <div class="mb-3">
-                                <label for="bookPicture" class="col-form-label">Description:</label>
-                                <input type="file" id="bookPicture" name="bookPicture" accept="image/*">
+                            {% comment %} <div class="mb-3">
+                                <label for="pictureReplies" class="col-form-label">Description:</label>
+                                <input type="file" id="pictureReplies" name="pictureReplies" accept="image/*">
                                 <input type="submit">
-                            </div> -->
+                            </div> {% endcomment %}
                         </form>
                     </div>
                     <div class="modal-footer">
@@ -56,13 +49,82 @@
             </div>
         </div>
         <div class="AddItem-button-container">
-            <button type="button" class="Add-button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Item by AJAX</button>
+            <button type="button" class="Add-button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Replies</button>
         </div> 
         <h4 id="itemCount"></h4>
         <br />
 
     </div>
-
-
 </body>
+
+<script>
+    async function getForumsReplies() {
+        return fetch("{% url 'bibliofilia:get_ForumReply_json' %}").then((res) => res.json())
+    }
+    
+    async function refreshForums() {
+
+        
+        document.getElementById("list_of_replies").innerHTML = "";
+        const ForumsReplies = await getForumsReplies(); // Use the correct variable name
+
+        let htmlString = `
+            <tr style="text-align: center;">
+                <th>User:</th>
+                <th>Reply Text:</th>
+                <th>Timestamp:</th>
+            </tr>
+        `;
+
+        ForumsReplies.forEach((reply) => { // Use the correct variable name
+            console.log(reply.fields);
+            htmlString += `
+                <tr>
+                    <td>${reply.fields.username}</td>
+                    <td>${reply.fields.text}</td>
+                    <td>${reply.fields.timestamp}</td>
+                </tr>
+            `;
+        });
+
+        document.getElementById("list_of_replies").innerHTML = htmlString;
+    }
+
+    refreshForums();
+
+    function addReplies(forum_id) {
+        console.log("forum_id:", forum_id);
+    
+        // Append the forum_id as a query parameter to the URL
+        const url = `{% url 'bibliofilia:add_replies_ajax' %}?forum_id=${forum_id}`;
+    
+        fetch(url, {
+            method: "POST",
+            body: new FormData(document.querySelector('#form'))
+        })
+        .then(refreshForums)
+        .catch(error => console.error("Error:", error));
+    
+        document.getElementById("form").reset();
+        return false;
+    }
+
+    function deleteForum(forum_id) {
+        fetch(`delete_Forum/${forum_id}/`, {
+            method: "DELETE",
+        }).then(refreshForums)
+        return false
+    }
+
+    document.getElementById("button_add").onclick = function() {
+        addReplies({{ forum.id }});
+    };
+
+    const myModal = new bootstrap.Modal(document.getElementById("staticBackdrop"));
+
+    myModal._element.addEventListener('hidden.bs.modal', () => {
+    // Clear the form fields by resetting the form
+    document.getElementById("form").reset();
+    });
+</script>
 {% endblock %}

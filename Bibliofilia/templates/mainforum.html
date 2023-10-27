@@ -73,9 +73,6 @@
     async function refreshForums() {
         document.getElementById("list_of_forms").innerHTML = ""
         const Forums = await getForums()
-        // const forumCountElement = document.getElementById("forumCount");
-        // const total_forums = Forums.length; 
-        // forumCountElement.innerHTML = `Kamu menyimpan ${total_forums} ${total_forums === 1 ? 'forum' : 'Forums'} pada aplikasi ini`;
         let htmlString =`
         <tr style="text-align: center;">
             <th>Forum Name</th>
@@ -115,20 +112,6 @@
         document.getElementById("form").reset()
         return false
     }
-
-    // function addAmount(forum_id) {
-    //     fetch(`add_amount/${forum_id}/`, {
-    //         method: "POST",
-    //     }).then(refreshForums)
-    //     return false
-    // }
-
-    // function reduceAmount(forum_id) {
-    //     fetch(`reduce_amount/${forum_id}/`, {
-    //         method: "POST",
-    //     }).then(refreshForums)
-    //     return false
-    // }
 
     function deleteForum(forum_id) {
         fetch(`delete_Forum/${forum_id}/`, {

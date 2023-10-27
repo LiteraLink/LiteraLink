@@ -15,7 +15,9 @@ class Forum (models.Model):
 class ForumReply(models.Model):
     forum = models.ForeignKey(Forum, on_delete=models.CASCADE, related_name='replies')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    username = models.CharField(max_length=255)
     text = models.TextField()
+    pictureReplies = models.ImageField(upload_to='reviewimages/')
     timestamp = models.DateTimeField(default=timezone.now)
 
 class Message(models.Model):
