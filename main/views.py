@@ -79,5 +79,3 @@ def flush(request):
 def show_json(request):
     data = Book.objects.all()
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
-
-
