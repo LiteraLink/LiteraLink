@@ -4,36 +4,11 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from DimanaSajaKapanSaja.forms import StationForm
 from DimanaSajaKapanSaja.models import Station, StationBook
-from authentication.models import UserProfile
+from authentication.models import UserBook, UserProfile
 from main.models import Book
 from django.contrib.auth.decorators import login_required
+from django.db.models import F
 
-# Create your views here.
-
-# def distribute_book(request, station_id):
-#     station = Station.objects.get(id=station_id)
-#     amount = station.rentable
-#     books = sample(list(Book.objects.all()), amount)
-
-#     for book in books:
-#         station_book = StationBook(
-#             station=station,
-#             bookID=book.bookID,
-#             title=book.title,
-#             authors=book.authors,
-#             display_authors=book.display_authors,
-#             description=book.description,
-#             categories=book.categories,
-#             thumbnail=book.thumbnail,
-#         )
-#         station_book.save()
-
-def flush(request):
-    books = StationBook.objects.all()
-    books.delete()
-
-    response = HttpResponse("flushhhh")
-    return response
 
 @login_required(login_url='auth:signin')
 def show_station(request):
@@ -49,11 +24,13 @@ def show_station_detail(request, station_id):
     station = Station.objects.get(id=station_id)
     station_book = StationBook.objects.filter(station=station_id)
     member = UserProfile.objects.get(user=request.user)
+    rented_book = UserBook.objects.filter(feature="DSKS").filter(user=member)
 
     context = {
         "station": station,
         "user": member,
-        "books": station_book
+        "books": station_book,
+        "rented_books": rented_book,
     }
     response = render(request, "station_detail.html", context)
 
@@ -88,8 +65,6 @@ def add_station(request):
             station_book.save()
 
         return HttpResponseRedirect(reverse('dimanasajakapansaja:show_station'))
-    
-    
 
     context = {'form': form}
     response = render(request, "add_station.html", context)
@@ -132,6 +107,60 @@ def del_station(request, station_id):
     station.delete()
 
     response = redirect('dimanasajakapansaja:show_station')
+    return response
+
+def rent_book(request, book_id):
+    user = UserProfile.objects.get(user=request.user)
+    book = StationBook.objects.get(id=book_id)
+    station_id = book.station.pk
+    station = Station.objects.get(id=station_id)
+    rented_book = UserBook(
+        user=user, 
+        bookID=book.bookID, 
+        title=book.title, 
+        authors=book.authors, 
+        display_authors=book.display_authors, 
+        description=book.description, 
+        categories=book.categories, 
+        thumbnail=book.thumbnail, 
+        feature="DSKS"
+    )
+    station.rentable = F('rentable') - 1
+    station.returnable = F('returnable') + 1
+    station.save()
+    rented_book.save()
+    book.delete()
+    
+    response = HttpResponseRedirect(reverse("dimanasajakapansaja:detail", args=[station_id]))
+    return response
+
+def return_book(request, station_id ,book_id):
+    book = UserBook.objects.get(id=book_id)
+    station = Station.objects.get(id=station_id)
+    returned_book = StationBook(
+        station=station,
+        bookID=book.bookID,
+        title=book.title, 
+        authors=book.authors, 
+        display_authors=book.display_authors, 
+        description=book.description, 
+        categories=book.categories, 
+        thumbnail=book.thumbnail, 
+    )
+    station.rentable = F('rentable') + 1
+    station.returnable = F('returnable') - 1
+    station.save()
+    returned_book.save()
+    book.delete()
+
+    response = HttpResponseRedirect(reverse("dimanasajakapansaja:detail", args=[station_id]))
+    return response
+
+def flush(request):
+    books = StationBook.objects.all()
+    books.delete()
+
+    response = HttpResponse("flushhhh")
     return response
 
 
