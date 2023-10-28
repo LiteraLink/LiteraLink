@@ -13,6 +13,7 @@ urlpatterns = [
     path('add_replies_ajax', views.add_replies_ajax, name='add_replies_ajax'),
     path('create_forum', views.create_Forum,name="create_Forum"),
     path('delete_Forum/<int:forum_id>/', views.delete_Forum, name='delete_Forum'),
+    path('delete_replies/<int:reply_id>/', views.delete_Replies, name='delete_Replies'),
     path('forum/<int:forum_id>/', views.showChildForum, name='showChildForum'),
     path('showTest', views.showTest,name="showTest"),
 ]

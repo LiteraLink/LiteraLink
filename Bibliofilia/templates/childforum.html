@@ -1,5 +1,7 @@
 {% extends 'base.html' %} 
 
+{% load static %}
+
 {% block content %}
     
 <head>
@@ -10,7 +12,7 @@
         <div class = brand>
             <h3>Welcome to Bibliofilia</h3> 
             <h5> {{ forum_title }} </h5>
-            <h5> {{ forum_head_msg }} </h5>
+            <h5> {{ forum_head_msg|safe }} </h5>
             <h5> {{ forum_id }} </h5>
         </div>
     </nav>
@@ -52,6 +54,7 @@
     </div>
 </body>
 
+<script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
 <script>
     const main_forum_id = {{ forum.id }};
     async function getForumsReplies() {
@@ -74,9 +77,15 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">${reply.fields.username}</h5>
-                            <p class="card-text">${reply.fields.text}</p>
+                            <p class="card-text">${ reply.fields.text }</p> 
                         </div>
-                        <div class="card-footer">${reply.fields.timestamp}</div>
+                        
+                        <div class="card-footer">${reply.fields.timestamp} 
+                            <a>
+                                <button type="submit" class="remove-btn" onclick="deleteForum(${reply.pk})">🗑</button>
+                            </a>  
+
+                        </div>
                     </div>
                 `;
     
@@ -107,13 +116,6 @@
                 console.error("Error: " + response.statusText);
             }
         })
-        .then(data => {
-            // Update the repliesTotal value in the DOM
-            if (data && data.repliesTotal !== undefined) {
-                document.getElementById("repliesTotal").textContent = data.repliesTotal;
-            }
-        })
-        
         .catch(error => console.error("Error:", error));
     
         document.getElementById("form").reset();
@@ -121,16 +123,38 @@
     }
 
     function deleteForum(forum_id) {
-        fetch(`delete_Forum/${forum_id}/`, {
+        fetch(`/bibliofilia/delete_replies/${forum_id}/`, {
             method: "DELETE",
         }).then(refreshForums)
         return false
     }
 
-    document.getElementById("button_add").onclick = function() {
-        addReplies({{ forum.id }});
-        refreshForums( main_forum_id );
-    };
+    document.addEventListener("DOMContentLoaded", function() {
+        // Initialize CKEditor for the "text" div
+        CKEDITOR.replace('text');
+
+
+        // Function to reset CKEditor content
+        function resetCKEditor() {
+            if (CKEDITOR.instances.text) {
+                CKEDITOR.instances.text.setData(''); // Clear CKEditor content
+            }
+        }
+
+        const form = document.getElementById("form");
+        
+        // Attach the resetCKEditor function to the modal's "show" event
+        document.getElementById("button_add").onclick = function() {
+            text.value = CKEDITOR.instances.text.getData();
+            console.log("Masuk",text.value)
+
+
+            addReplies({{ forum.id }});
+            refreshForums( main_forum_id );
+            resetCKEditor()
+        }});
+
+    
 
     const myModal = new bootstrap.Modal(document.getElementById("staticBackdrop"));
 

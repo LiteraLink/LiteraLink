@@ -1,9 +1,17 @@
 {% extends 'base.html' %} 
 
+{% load static %} <!-- Load the static tag library at the beginning of your template -->
+
 {% block content %}
 
 <head>
     <title>Bibliofilia</title>
+
+    <style>
+        .wider-modal {
+            max-width: 800px; /* Adjust the width as needed */
+        }
+    </style>
 </head>
 <body>
     <nav class = wrap>
@@ -17,11 +25,11 @@
         <table id="list_of_forms"></table>
  
         <div class="modal fade" id="staticBackdrop" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog wider-modal">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="staticBackdropLabel">Add New Item</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" id="btnModal" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form id="form" onsubmit="return false;">
@@ -38,11 +46,6 @@
                                 <label for="userReview" class="col-form-label">Message:</label>
                                 <textarea class="form-control" id="userReview" name="userReview"></textarea>
                             </div>
-                            <!-- <div class="mb-3">
-                                <label for="bookPicture" class="col-form-label">Description:</label>
-                                <input type="file" id="bookPicture" name="bookPicture" accept="image/*">
-                                <input type="submit">
-                            </div> -->
                         </form>
                     </div>
                     <div class="modal-footer">
@@ -64,7 +67,7 @@
 </body>
 <!-- <h1>Welcome to Bibliofilia</h1> -->
 
-
+<script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
 <script>
     async function getForums() {
         return fetch("{% url 'bibliofilia:get_Forum_json' %}").then((res) => res.json())
@@ -107,6 +110,8 @@
     refreshForums()
 
     function addForums() {
+        console.log("HAHA",document.getElementById("form").querySelector("userReview"))
+        console.log(userReview.value)
         fetch("{% url 'bibliofilia:add_Forum_ajax' %}", {
             method: "POST",
             body: new FormData(document.querySelector('#form'))
@@ -119,17 +124,46 @@
     function deleteForum(forum_id) {
         fetch(`delete_Forum/${forum_id}/`, {
             method: "DELETE",
-        }).then(refreshForums)
+        }).then(refreshForums   )
         return false
     }
+    
+    document.addEventListener("DOMContentLoaded", function() {
+        // Initialize CKEditor for the "userReview" div
+        CKEDITOR.replace('userReview');
 
-    document.getElementById("button_add").onclick = addForums
+
+        // Function to reset CKEditor content
+        function resetCKEditor() {
+            if (CKEDITOR.instances.userReview) {
+                CKEDITOR.instances.userReview.setData(''); // Clear CKEditor content
+            }
+        }
+
+        const form = document.getElementById("form");
+        
+        // Attach the resetCKEditor function to the modal's "show" event
+        document.getElementById("button_add").onclick = function() {
+            const ckEditorContent = CKEDITOR.instances.userReview.getData();
+            const userReviewTextarea = form.querySelector("userReview");
+            userReview.value = CKEDITOR.instances.userReview.getData();
+            console.log("Masuk",userReview.value)
+
+            addForums()
+
+            resetCKEditor()
+        };
+    });
+
+    // document.getElementById("button_add").onclick = addForums
 
     const myModal = new bootstrap.Modal(document.getElementById("staticBackdrop"));
 
     myModal._element.addEventListener('hidden.bs.modal', () => {
     // Clear the form fields by resetting the form
     document.getElementById("form").reset();
+
     });
+
 </script>
 {% endblock %}

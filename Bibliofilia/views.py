@@ -115,6 +115,7 @@ def reduce_amount(request, forum_id):
 
 @csrf_exempt
 def delete_Forum(request, forum_id):
+    print(request)
     if request.method == 'DELETE':
         forum = Forum.objects.get(pk=forum_id, user=request.user)
         forum.user = request.user
@@ -122,9 +123,21 @@ def delete_Forum(request, forum_id):
         return HttpResponse(b"REMOVED", status=201)
     return HttpResponseNotFound()
 
+
+@csrf_exempt
+def delete_Replies(request, reply_id):
+    print(request, reply_id)
+    if request.method == 'DELETE':
+        forumReplies = ForumReply.objects.get(id=reply_id)
+        # forumReplies.user = request.user
+        forumReplies.delete()
+        return HttpResponse(b"REMOVED", status=201)
+    return HttpResponseNotFound()
+
+
 def get_Forum_json(request):
-    forum = Forum.objects.filter(user=request.user)
-    forum.user = request.user
+    forum = Forum.objects.all()
+    # forum.user = request.user
     return HttpResponse(serializers.serialize('json', forum))
 
 def get_ForumReply_json(request):
