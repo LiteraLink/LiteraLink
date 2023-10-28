@@ -98,7 +98,22 @@
             method: "POST",
             body: new FormData(document.querySelector('#form'))
         })
-        .then(refreshForums)
+        .then(response => {
+            if (response.status === 201) {
+                // Reply was created successfully
+                refreshForums()
+                return response.json();
+            } else {
+                console.error("Error: " + response.statusText);
+            }
+        })
+        .then(data => {
+            // Update the repliesTotal value in the DOM
+            if (data && data.repliesTotal !== undefined) {
+                document.getElementById("repliesTotal").textContent = data.repliesTotal;
+            }
+        })
+        
         .catch(error => console.error("Error:", error));
     
         document.getElementById("form").reset();

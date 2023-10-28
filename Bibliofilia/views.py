@@ -143,7 +143,7 @@ def add_Forum_ajax(request):
         userReview = request.POST.get("userReview")    
         user = request.user
 
-        new_product = Forum(BookName=BookName,bookPicture=bookPicture,userReview=userReview,forumsDescription=forumsDescription, user=user)
+        new_product = Forum(BookName=BookName,bookPicture=bookPicture,userReview=userReview,forumsDescription=forumsDescription,repliesTotal=0, user=user)
         
         new_product.save()
 
@@ -154,13 +154,20 @@ def add_replies_ajax(request):
     if request.method == 'POST':
         text = request.POST.get("text")
         user = request.user
-        forum_id = request.GET.get("forum_id")  # Use request.GET to access query parameters
-        print(forum_id)
-        # Get the specific Forum instance based on the provided forum_id
+        forum_id = request.GET.get("forum_id")
+        forumMain = Forum.objects.get(pk=forum_id)
+        forumMain.repliesTotal += 1
+        forumMain.save()
+
         forum = get_object_or_404(Forum, id=forum_id)
 
         new_reply = ForumReply(text=text, user=user, forum=forum, username=user.username)
         new_reply.save()
 
-        return HttpResponse(b"CREATED", status=201)
+        # Return the updated repliesTotal value in the response
+        response_data = {
+            'repliesTotal': forumMain.repliesTotal
+        }
+
+        return JsonResponse(response_data, status=201)
     return HttpResponseNotFound()
