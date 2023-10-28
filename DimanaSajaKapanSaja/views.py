@@ -170,9 +170,11 @@ def del_station(request, station_id):
 
 def rent_book(request, book_id):
     user = UserProfile.objects.get(user=request.user)
+
     if(user.role != 'M'):
         response = HttpResponseForbidden("Access Denied")
         return response
+      
     book = StationBook.objects.get(id=book_id)
     station_id = book.station.pk
     station = Station.objects.get(id=station_id)
@@ -190,7 +192,7 @@ def rent_book(request, book_id):
 
     station.rentable-=1
     station.returnable+=1
-
+    
     station.save()
     rented_book.save()
     book.delete()
@@ -216,17 +218,16 @@ def return_book(request, station_id ,book_id):
         categories=book.categories, 
         thumbnail=book.thumbnail, 
     )
+
     station.rentable+=1
     station.returnable-=1
-
+    
     station.save()
     returned_book.save()
     book.delete()
 
     response = HttpResponseRedirect(reverse("dimanasajakapansaja:detail", args=[station_id]))
     return response
-
-
 
 def flush(request):
     books = StationBook.objects.all()
