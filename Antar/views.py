@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.core import serializers
 from Antar.models import Person, Books
 from main.models import Book
+from Antar.forms import ProductForm
 from django.views.decorators.csrf import csrf_exempt
 
 # menampilan list-list buku yang akan di pesan user
@@ -22,6 +23,11 @@ def show_list_checkout(request):
 
 def pemesanan(request,id):
     books = Book.objects.get(pk=id)
+    form = ProductForm
+    context = {
+        'id_buku' : id,
+        'form' : form
+    }
     return render(request,'pesan.html',{'books': books})
 
 
