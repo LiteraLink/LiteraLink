@@ -14,4 +14,6 @@ urlpatterns = [
     path('detail/<int:station_id>/', views.show_station_detail, name='detail'),
     path('rent_book/<int:book_id>/', views.rent_book, name='rent_book'),
     path('return_book/<int:station_id>/<int:book_id>/', views.return_book, name='return_book'),
+    path('get-station/', views.get_station_json, name='get_station_json'),
+    path('add-station-ajax/', views.add_station_ajax, name='add_station_ajax')
 ]

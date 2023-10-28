@@ -1,5 +1,5 @@
 from random import sample
-from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from DimanaSajaKapanSaja.forms import StationForm
@@ -7,15 +7,20 @@ from DimanaSajaKapanSaja.models import Station, StationBook
 from authentication.models import UserBook, UserProfile
 from main.models import Book
 from django.contrib.auth.decorators import login_required
-from django.db.models import F
+from django.views.decorators.csrf import csrf_exempt
+from django.core import serializers
 
 
 @login_required(login_url='auth:signin')
 def show_station(request):
     station = Station.objects.all()
-    # station_book = StationBook.objects.filter(station_id=station.id)
+    member = UserProfile.objects.get(user=request.user)
 
-    context = {"stations": station}
+    context = {
+        "stations": station,
+        "user": member,
+    }
+        
     response = render(request, "dimanasajakapansaja_page.html", context)
 
     return response
@@ -35,9 +40,58 @@ def show_station_detail(request, station_id):
     response = render(request, "station_detail.html", context)
 
     return response
-    
 
+@csrf_exempt
+def add_station_ajax(request):
+    station_id = 0
+    user = UserProfile.objects.get(user=request.user)
+    if(user.role != 'A'):
+        response = HttpResponseForbidden("Access Denied")
+        return response
+    
+    if request.method == 'POST':
+        name = request.POST.get("name")
+        address = request.POST.get("address")
+        opening_hours = request.POST.get("opening_hours")
+        rentable = request.POST.get("rentable")
+        returnable = request.POST.get("returnable")
+        map_location = request.FILES.get("map_location")
+
+        station = Station(name=name, address=address, opening_hours=opening_hours, rentable=rentable, returnable=returnable, map_location=map_location)
+        station.save()
+        station_id = station.id
+
+        station = Station.objects.get(id=station_id)
+        amount = station.rentable
+        books = sample(list(Book.objects.all()), amount)
+
+        for book in books:
+            station_book = StationBook(
+                station=station,
+                bookID=book.bookID,
+                title=book.title,
+                authors=book.authors,
+                display_authors=book.display_authors,
+                description=book.description,
+                categories=book.categories,
+                thumbnail=book.thumbnail,
+            )
+            station_book.save()
+
+        return HttpResponse(b"CREATED", status=201)
+
+    return HttpResponseNotFound()
+
+def get_station_json(request):
+    station = Station.objects.all()
+    response = HttpResponse(serializers.serialize('json', station))
+    return response
+    
 def add_station(request):
+    user = UserProfile.objects.get(user=request.user)
+    if(user.role != 'A'):
+        response = HttpResponseForbidden("Access Denied")
+        return response
     station_id = 0
 
     form = StationForm(request.POST, request.FILES)
@@ -103,6 +157,11 @@ def edit_station(request, station_id):
     return response
 
 def del_station(request, station_id):
+    user = UserProfile.objects.get(user=request.user)
+    if(user.role != 'A'):
+        response = HttpResponseForbidden("Access Denied")
+        return response
+    
     station = Station.objects.filter(id=station_id)
     station.delete()
 
@@ -111,6 +170,11 @@ def del_station(request, station_id):
 
 def rent_book(request, book_id):
     user = UserProfile.objects.get(user=request.user)
+
+    if(user.role != 'M'):
+        response = HttpResponseForbidden("Access Denied")
+        return response
+      
     book = StationBook.objects.get(id=book_id)
     station_id = book.station.pk
     station = Station.objects.get(id=station_id)
@@ -125,8 +189,10 @@ def rent_book(request, book_id):
         thumbnail=book.thumbnail, 
         feature="DSKS"
     )
-    station.rentable = F('rentable') - 1
-    station.returnable = F('returnable') + 1
+
+    station.rentable-=1
+    station.returnable+=1
+    
     station.save()
     rented_book.save()
     book.delete()
@@ -135,6 +201,11 @@ def rent_book(request, book_id):
     return response
 
 def return_book(request, station_id ,book_id):
+    user = UserProfile.objects.get(user=request.user)
+    if(user.role != 'M'):
+        response = HttpResponseForbidden("Access Denied")
+        return response
+    
     book = UserBook.objects.get(id=book_id)
     station = Station.objects.get(id=station_id)
     returned_book = StationBook(
@@ -147,8 +218,10 @@ def return_book(request, station_id ,book_id):
         categories=book.categories, 
         thumbnail=book.thumbnail, 
     )
-    station.rentable = F('rentable') + 1
-    station.returnable = F('returnable') - 1
+
+    station.rentable+=1
+    station.returnable-=1
+    
     station.save()
     returned_book.save()
     book.delete()
