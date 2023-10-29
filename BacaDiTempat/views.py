@@ -191,7 +191,7 @@ def rent_book(request, book_id):
         response = HttpResponseForbidden("Access Denied")
         return response
       
-    book_venue = BookVenue.objects.get(id=book_id)
+    book_venue = BookVenue.objects.get(pk=book_id)
     book_venue.user = user
     venue_id = book_venue.venue.pk
     venue = Venue.objects.get(pk=venue_id)
@@ -212,7 +212,7 @@ def return_book(request, book_id):
         response = HttpResponseForbidden("Access Denied")
         return response
     
-    book_venue = BookVenue.objects.get(bookID=book_id)
+    book_venue = BookVenue.objects.get(pk=book_id)
     
     if book_venue.user == user:
         book_venue.user = None
