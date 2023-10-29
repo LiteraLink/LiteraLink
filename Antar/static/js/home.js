@@ -42,7 +42,7 @@ async function refreshProducts() {
                         <p class="card-text" style="font-size: 15px; text-align: center;">Author: ${book.fields.display_authors}</p>
                     </div>
                     <div class="container">
-                        <a href="pemesanan-buku/${book.pk}">
+                        <a href="/antar/pemesanan-buku/${book.pk}">
                             <button class="btn" style="background-color: #CEDD00;color: #0B7377;" type="button"> Antar Buku Ini</button>
                         </a>     
                     </div>
