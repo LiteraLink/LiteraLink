@@ -6,7 +6,8 @@ async function renderStation() {
     let stations = await getProducts();
     document.getElementById("station-container").innerHTML = ""
     let htmlContent = '';
-    let userRole = "{% if user.role %}{{ user.role }}{% endif %}";
+    var userRoleElement = document.getElementById("userRole");
+    var userRole = userRoleElement.getAttribute("data-role");
 
     stations.forEach(station => {
         htmlContent += `
@@ -51,7 +52,7 @@ async function renderStation() {
 renderStation()
 
 function addStation() {
-    fetch("{% url 'dimanasajakapansaja:add_station_ajax' %}", {
+    fetch("/dimanasajakapansaja/add_station_ajax/", {
         method: "POST",
         body: new FormData(document.querySelector('#form'))
     }).then(renderStation)
