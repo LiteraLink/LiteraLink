@@ -84,44 +84,12 @@ function deleteForum(forum_id) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-    // Initialize CKEditor for the "userReview" div
-    const basicToolbar = [
-    { name: 'document', items: ['Source', '-', 'Save', 'NewPage', 'Preview', 'Print', '-', 'Templates'] },
-    { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'] },
-    { name: 'styles', items: ['Format', 'Font', 'FontSize'] },
-    { name: 'basicstyles', items: ['Bold', 'Italic', 'RemoveFormat', 'NumberedList', 'BulletedList'] }, // Add Bold and Italic
-    { name: 'insert', items: ['Image', 'Table', 'HorizontalRule'] }, // Add Image
-    { name: 'links', items: ['Link', 'Unlink'] },
-    { name: 'tools', items: ['Maximize', 'ShowBlocks', 'About'] },
-    // Add more basic toolbar items as needed
-    ];
-
-    CKEDITOR.replace('userReview', {
-        toolbar: basicToolbar,
-    });
-
-
-    // Function to reset CKEditor content
-    function resetCKEditor() {
-        if (CKEDITOR.instances.userReview) {
-            CKEDITOR.instances.userReview.setData(''); // Clear CKEditor content
-        }
-    }
-
-    const form = document.getElementById("form");
     
-    
-
     // Attach the resetCKEditor function to the modal's "show" event
     document.getElementById("button_add").onclick = function() {
-        const ckEditorContent = CKEDITOR.instances.userReview.getData();
-        const userReviewTextarea = form.querySelector("userReview");
-        userReview.value = CKEDITOR.instances.userReview.getData();
-        console.log("Masuk",userReview.value)
 
         addForums()
 
-        resetCKEditor()
     };
 }); 
 

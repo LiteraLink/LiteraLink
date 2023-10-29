@@ -6,7 +6,6 @@
     
 <head>
     {% load static %}
-    <script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
     <title>Bibliofilia</title>
     <style>
         .wider-modal {
@@ -136,40 +135,15 @@
     }
 
     document.addEventListener("DOMContentLoaded", function() {
-        const basicToolbar = [
-        { name: 'document', items: ['Source', '-', 'Save', 'NewPage', 'Preview', 'Print', '-', 'Templates'] },
-        { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'] },
-        { name: 'styles', items: ['Format', 'Font', 'FontSize'] },
-        { name: 'basicstyles', items: ['Bold', 'Italic', 'RemoveFormat', 'NumberedList', 'BulletedList'] }, // Add Bold and Italic
-        { name: 'insert', items: ['Image', 'Table', 'HorizontalRule'] }, // Add Image
-        { name: 'links', items: ['Link', 'Unlink'] },
-        { name: 'tools', items: ['Maximize', 'ShowBlocks', 'About'] },
-        // Add more basic toolbar items as needed
-        ];
-        
-        // Initialize CKEditor for the "text" div
-        CKEDITOR.replace('text', {
-            toolbar: basicToolbar,
-        });
 
-        // Function to reset CKEditor content
-        function resetCKEditor() {
-            if (CKEDITOR.instances.text) {
-                CKEDITOR.instances.text.setData(''); // Clear CKEditor content
-            }
-        }
-
-        const form = document.getElementById("form");
         
         // Attach the resetCKEditor function to the modal's "show" event
         document.getElementById("button_add").onclick = function() {
-            text.value = CKEDITOR.instances.text.getData();
-            console.log("Masuk",text.value)
+
 
 
             addReplies({{ forum.id }});
             refreshForums( main_forum_id );
-            resetCKEditor()
         }});
 
     

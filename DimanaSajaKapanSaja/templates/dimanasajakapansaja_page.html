@@ -3,12 +3,13 @@
 
 
 {% block meta %}
-<link rel="stylesheet" href="{% static 'index.css' %}">
-<script type="text/javascript" src="{% static 'script.js' %}"></script>
+<link rel="stylesheet" href="{% static '/index.css' %}">
+<script type="text/javascript" src="{% static '/script.js' %}" defer></script>
 {% endblock meta %}
 
 {% block content %}
 <div class="wholepage">
+    <div id="userRole" data-role="{% if member.role %}{{ member.role }}{% endif %}"></div>
 
     <h1>DimanaSajaKapanSaja</h1>
     
