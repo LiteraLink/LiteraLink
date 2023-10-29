@@ -36,6 +36,12 @@
   </div>
   <br>
   <br>
+  <div class="container">
+    <form class="d-flex" method="GET" action="{% url 'antar:show_list_books_filter' %}">
+      <input class="form-control me-2" name="queryBook" type="search" placeholder="Search" aria-label="Search">
+      <button type="submit" class="btn" style="background-color: #CEDD00;color: #0B7377;">Search</button>
+    </form>
+  </div>
   <div class="card-container" id="bookContainer" data-role="{{ role }}">
   </div>
 </body>

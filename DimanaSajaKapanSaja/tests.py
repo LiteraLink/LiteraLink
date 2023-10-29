@@ -12,9 +12,11 @@ class StationTestCase(TestCase):
 
     def setUp(self):
         # Setup test data
-        self.user = User.objects.create_user(username='testuser', password='testpass')
+        self.user = User.objects.create_user(username='martin', password='123mmt123')
         self.profile = UserProfile.objects.create(user=self.user, role='M', full_name="Martin Tarigan", email="martinmtarigan7@gmail.com")
         self.station = Station.objects.create(name='Station1', address='Address1', opening_hours='9-5', rentable=5, returnable=5, map_location="images/MOI_5PDpC5Q.png")
+        self.station1 = Station.objects.create(name='Station1', address='Address1', opening_hours='9-5', rentable=5, returnable=5, map_location="images/MOI_5PDpC5Q.png")
+        self.station2 = Station.objects.create(name='Station2', address='Address1', opening_hours='9-5', rentable=5, returnable=5, map_location="images/MOI_5PDpC5Q.png")
         self.book = Book.objects.create(bookID='1', title='Top Secret', authors='Soledad Romero', display_authors='Soledad Romero', description="abc", categories="Fiction", thumbnail="http://books.google.com/books/content?id=CNkDAAAAMBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api")
         self.station_book = StationBook.objects.create(station=self.station, bookID='1', title='Top Secret', authors='Soledad Romero', display_authors='Soledad Romero', description="abc", categories="Fiction", thumbnail="http://books.google.com/books/content?id=CNkDAAAAMBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api")
         self.user_book = UserBook(user=self.profile, bookID='1', title='Top Secret', authors='Soledad Romero', display_authors='Soledad Romero', description="abc", categories="Fiction", thumbnail="http://books.google.com/books/content?id=CNkDAAAAMBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api", feature="DSKS")
@@ -132,5 +134,12 @@ class StationTestCase(TestCase):
         response = self.client.post(reverse('dimanasajakapansaja:add_station'), {})
         self.assertNotEqual(response.status_code, HttpResponseRedirect.status_code)
         self.assertFalse(Station.objects.filter(name='TestStation').exists())
+
+    def test_show_station(self):
+        self.client.login(username='testuser', password='testpass')
+        response = self.client.get(reverse('dimanasajakapansaja:show_station'))
+        self.assertContains(response, 'Station1')
+        self.assertContains(response, 'Station2')
+    
 
 
