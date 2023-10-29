@@ -1,11 +1,19 @@
 {% extends 'base.html' %} 
 
-{% load static %}
+
 
 {% block content %}
     
 <head>
+    {% load static %}
+    <script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
     <title>Bibliofilia</title>
+    <style>
+        .wider-modal {
+            max-width: 800px; /* Adjust the width as needed */
+        }
+        /* */
+    </style>
 </head>
 <body>
     <nav class = wrap>
@@ -23,7 +31,7 @@
         </div>
  
         <div class="modal fade" id="staticBackdrop" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog wider-modal"">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="staticBackdropLabel">Add New Item</h1>
@@ -54,7 +62,7 @@
     </div>
 </body>
 
-<script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+
 <script>
     const main_forum_id = {{ forum.id }};
     async function getForumsReplies() {
@@ -64,42 +72,40 @@
     async function refreshForums() {
         document.getElementById("list_of_replies").innerHTML = "";
         const ForumsReplies = await getForumsReplies(); // Use the correct variable name
-        
+        let userRole = "{% if member.role %}{{ member.role }}{% endif %}";
+
         ForumsReplies.forEach((reply) => {
-            console.log(reply)
             if (reply.fields.forum == main_forum_id) {
                 // Create a card element
                 const card = document.createElement("div");
                 card.className = "col-md-4 mb-4"; // Adjust the class as needed
-    
+                console.log(reply)
                 // Create the card content
                 card.innerHTML = `
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">${reply.fields.username}</h5>
-                            <p class="card-text">${ reply.fields.text }</p> 
+                            <p class="card-text">${reply.fields.text}</p>
                         </div>
-                        
-                        <div class="card-footer">${reply.fields.timestamp} 
-                            <a>
+            
+                        <div class="card-footer">${reply.fields.timestamp}
+                            ${userRole === 'A' ? `<a>
                                 <button type="submit" class="remove-btn" onclick="deleteForum(${reply.pk})">🗑</button>
-                            </a>  
-
+                            </a>` : ''}
                         </div>
                     </div>
                 `;
-    
+
                 // Append the card to the list_of_replies
                 document.getElementById("list_of_replies").appendChild(card);
             }
         });
+
     }
 
     refreshForums();
 
-    function addReplies(forum_id) {
-        {% comment %} console.log("forum_id:", forum_id); {% endcomment %}
-    
+    function addReplies(forum_id) {    
         // Append the forum_id as a query parameter to the URL
         const url = `{% url 'bibliofilia:add_replies_ajax' %}?forum_id=${forum_id}`;
     
@@ -130,9 +136,21 @@
     }
 
     document.addEventListener("DOMContentLoaded", function() {
+        const basicToolbar = [
+        { name: 'document', items: ['Source', '-', 'Save', 'NewPage', 'Preview', 'Print', '-', 'Templates'] },
+        { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'] },
+        { name: 'styles', items: ['Format', 'Font', 'FontSize'] },
+        { name: 'basicstyles', items: ['Bold', 'Italic', 'RemoveFormat', 'NumberedList', 'BulletedList'] }, // Add Bold and Italic
+        { name: 'insert', items: ['Image', 'Table', 'HorizontalRule'] }, // Add Image
+        { name: 'links', items: ['Link', 'Unlink'] },
+        { name: 'tools', items: ['Maximize', 'ShowBlocks', 'About'] },
+        // Add more basic toolbar items as needed
+        ];
+        
         // Initialize CKEditor for the "text" div
-        CKEDITOR.replace('text');
-
+        CKEDITOR.replace('text', {
+            toolbar: basicToolbar,
+        });
 
         // Function to reset CKEditor content
         function resetCKEditor() {

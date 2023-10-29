@@ -1,34 +1,39 @@
 {% extends 'base.html' %} 
 
-{% load static %} <!-- Load the static tag library at the beginning of your template -->
+
 
 {% block content %}
 
 <head>
+    {% load static %} 
+    <!-- <script src="../static/mainForum.js" defer></script>   -->
+    <script src="{% static 'mainForum.js' %}" defer></script>
+    <script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}" defer></script>
+    <link rel="stylesheet" href="{% static 'mainForum.css' %}">
     <title>Bibliofilia</title>
-
-    <style>
-        .wider-modal {
-            max-width: 800px; /* Adjust the width as needed */
-        }
-    </style>
 </head>
 <body>
-    <nav class = wrap>
-        <div class = brand>
-            <h3>Welcome to Bibliofilia</h3> 
-            <h5> {{ name }} </h5>
-        </div>
-    </nav>
-
     <div class="content">
-        <table id="list_of_forms"></table>
- 
+        <div id="userRole" data-role="{% if member.role %}{{ member.role }}{% endif %}"></div>
+
+        <div class="container my-4">
+            <div class="row">
+                <div class="col-6 py-5">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Create New Forum</button>
+                </div>
+            </div>
+            <div class="forumHead" id="forumHead"></div>
+            <div class="row">
+                <div class="col-12">
+                    <table class="table table-hover p-5 " id="list_of_forms"></table>
+                </div>
+            </div>
+        </div>
         <div class="modal fade" id="staticBackdrop" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog wider-modal">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Add New Item</h1>
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Add New Forum</h1>
                         <button type="button" id="btnModal" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -50,120 +55,16 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="button_add" data-bs-dismiss="modal">Add Item</button>
+                        <button type="button" class="btn btn-primary" id="button_add" data-bs-dismiss="modal">Add Forum</button>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="AddItem-button-container">
-            <button type="button" class="Add-button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Item by AJAX</button>
-        </div> 
-        <h4 id="itemCount"></h4>
         <br />
-
     </div>
 
 
 </body>
 <!-- <h1>Welcome to Bibliofilia</h1> -->
 
-<script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
-<script>
-    async function getForums() {
-        return fetch("{% url 'bibliofilia:get_Forum_json' %}").then((res) => res.json())
-    }
-    
-    async function refreshForums() {
-        document.getElementById("list_of_forms").innerHTML = ""
-        const Forums = await getForums()
-        let htmlString =`
-        <tr style="text-align: center;">
-            <th>Forum Name</th>
-            <th>description</th>
-            <th>replies Count</th>
-            <th>Posted Date</th>
-            <th>DEBUG</th>
-        </tr>
-        `
-        Forums.forEach((forum) => {
-            console.log(forum)
-            htmlString += `
-            
-            <tr>
-                <td onclick ="window.location='forum/${forum.pk}/';" >${forum.fields.BookName}</td>
-                <td onclick ="window.location='forum/${forum.pk}/';" >${forum.fields.forumsDescription}</td>
-                <td onclick ="window.location='forum/${forum.pk}/';" >${forum.fields.repliesTotal}</td>
-                <td onclick ="window.location='forum/${forum.pk}/';" >${forum.fields.dateOfPosting}</td>
-                <td>
-                    <div class="display-btn">
-                        <a>
-                            <button type="submit" class="remove-btn" onclick="deleteForum(${forum.pk})">🗑</button>
-                        </a>                                   
-                    </div>
-                </td>
-            </tr>
-`        })
-        
-        document.getElementById("list_of_forms").innerHTML = htmlString
-    }
-
-    refreshForums()
-
-    function addForums() {
-        console.log("HAHA",document.getElementById("form").querySelector("userReview"))
-        console.log(userReview.value)
-        fetch("{% url 'bibliofilia:add_Forum_ajax' %}", {
-            method: "POST",
-            body: new FormData(document.querySelector('#form'))
-        }).then(refreshForums)
-
-        document.getElementById("form").reset()
-        return false
-    }
-
-    function deleteForum(forum_id) {
-        fetch(`delete_Forum/${forum_id}/`, {
-            method: "DELETE",
-        }).then(refreshForums   )
-        return false
-    }
-    
-    document.addEventListener("DOMContentLoaded", function() {
-        // Initialize CKEditor for the "userReview" div
-        CKEDITOR.replace('userReview');
-
-
-        // Function to reset CKEditor content
-        function resetCKEditor() {
-            if (CKEDITOR.instances.userReview) {
-                CKEDITOR.instances.userReview.setData(''); // Clear CKEditor content
-            }
-        }
-
-        const form = document.getElementById("form");
-        
-        // Attach the resetCKEditor function to the modal's "show" event
-        document.getElementById("button_add").onclick = function() {
-            const ckEditorContent = CKEDITOR.instances.userReview.getData();
-            const userReviewTextarea = form.querySelector("userReview");
-            userReview.value = CKEDITOR.instances.userReview.getData();
-            console.log("Masuk",userReview.value)
-
-            addForums()
-
-            resetCKEditor()
-        };
-    });
-
-    // document.getElementById("button_add").onclick = addForums
-
-    const myModal = new bootstrap.Modal(document.getElementById("staticBackdrop"));
-
-    myModal._element.addEventListener('hidden.bs.modal', () => {
-    // Clear the form fields by resetting the form
-    document.getElementById("form").reset();
-
-    });
-
-</script>
 {% endblock %}

@@ -30,6 +30,7 @@ def show_station_detail(request, station_id):
     station_book = StationBook.objects.filter(station=station_id)
     member = UserProfile.objects.get(user=request.user)
     rented_book = UserBook.objects.filter(feature="DSKS").filter(user=member)
+    
 
     context = {
         "station": station,
