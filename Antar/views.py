@@ -20,6 +20,7 @@ def show_list_books(request):
     userprofile = UserProfile.objects.get(user=request.user)
     role = userprofile.role
 
+    request.session['role_user'] = role
     context={
         'books': books,
         'role': role
@@ -31,13 +32,15 @@ def show_list_books(request):
 def show_list_books_filter(request):
     # Mengambil semua objek buku dari model Book
     queryBook = request.GET.get('queryBook')
+    userprofile = UserProfile.objects.get(user=request.user)
+    role = userprofile.role
 
     # Simpan nilai query dalam sesi
     request.session['book_query'] = queryBook
 
     books = Book.objects.filter(title=queryBook)
     # Mengirimkan data buku ke template untuk ditampilkan
-    return render(request, 'home.html', {'books': books})
+    return render(request, 'home.html', {'books': books, 'role': role})
 
 def show_list_checkout_all(request):
     userprofile = UserProfile.objects.get(user=request.user)
@@ -47,11 +50,13 @@ def show_list_checkout_all(request):
         return render(request, 'checkout.html', {'persons': persons, 'role': role})
     else:
         empty_message = "Belum ada pesanan yang harus di antar."
-        return render(request, 'checkout.html', {'empty_message': empty_message})
+        return render(request, 'checkout.html', {'empty_message': empty_message, 'role': role})
     
 def show_list_checkout_filter(request):
     userprofile = UserProfile.objects.get(user=request.user)
+    print(userprofile)
     role = userprofile.role
+    print(role)
     query = request.GET.get('query')  # Mengambil nilai dari input form
 
     # Simpan nilai query dalam sesi
@@ -62,7 +67,7 @@ def show_list_checkout_filter(request):
         return render(request, 'checkout.html', {'persons': persons, 'role': role})
     else:
         empty_message = "Belum ada pesanan yang harus di antar."
-        return render(request, 'checkout.html', {'empty_message': empty_message})
+        return render(request, 'checkout.html', {'empty_message': empty_message, 'role': role})
 
 def update_order_status(request, id=None):
     print("berhasil ke update order status")
