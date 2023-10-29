@@ -1,12 +1,46 @@
 :root {
 --primary-color:#CEDD00; /* Change this to your desired color */
---background-image: url("{% static 'img/Group7.png' %}");
+--background-image: url("../static/img/Group7.png");
+}
+.hero {
+    background-image: url("../static/img/Group7.png");
+    padding-bottom: 310px;
+    /* Sesuaikan dengan kebutuhan Anda */
+    background-size: 100% auto;
+    /* Mengatur lebar gambar maksimum dan tinggi mengikuti aspek asli */
+    background-repeat: no-repeat;
+    /* Mencegah gambar diulang */
+    background-position: center top;
+}
+
+.container-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container-bg {
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.custom-h4 {
+    font-family: 'Manrope', sans-serif;
+    max-width: 600px;
+    text-align: center;
+    margin: 0 auto;
+    color: #fff;
+    line-height: 1.4;
+    font-size: 18px;
 }
 
 /* Change the primary button color */
 .btn-primary {
     background-color: var(--primary-color);
-border-color: var(--primary-color);
+    border-color: var(--primary-color);
 }
 
 /* Change the link color */
@@ -17,13 +51,25 @@ a {
 
 /* Add more styles as needed */
 
+.modal-content {
+    color: #126164;
+    background-color: white; /* Change text color to ensure readability */
+}
 
+.persegi-panjang {
+    height: 10px;
+    /* Tinggi elemen */
+    width: 100px;
+    margin-top: 10px;
+    background-color: #FFFF;
+    /* Warna latar belakang, ganti dengan warna yang Anda inginkan */
+}
 
 body {
     font-family: 'Sora', sans-serif;
     background-color: #126164;
     color: black
-  }
+}
 
 .forumHead{
     color: white;
@@ -39,7 +85,7 @@ td:first-child {
     white-space: nowrap;
     text-overflow: '...';}
 tr{
-    border-top: 5px solid black;
+    border-top: 5px solid #CEDD00;
 }
 table {
     border-collapse: collapse;

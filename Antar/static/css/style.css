@@ -1,4 +1,4 @@
-.body {
+body {
     font-family: 'Sora', sans-serif;
     background-color: #126164;
     color: #fff;
@@ -25,11 +25,6 @@
     margin-right: auto;
     padding-left: 1rem;
     padding-right: 1rem;
-}
-
-.custom-bg {
-    background-color: #CEDD00;
-    color: #0B7377;
 }
 
 .card-container {
@@ -90,7 +85,7 @@
 }
 
 .bentuk {
-    width: auto;
+    width: 500px;
     /* Lebar container */
     height: auto;
     padding: 20px;

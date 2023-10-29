@@ -106,9 +106,7 @@ def get_person_json(request):
     userprofile = UserProfile.objects.get(user=request.user)
     role = userprofile.role
 
-    query = request.GET
-
-    print(query)
+    query = request.session.get('filter_query')
 
     if role == "M":
         if query:

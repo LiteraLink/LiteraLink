@@ -118,9 +118,9 @@
             Home
         </button>
       </a>
-      {% comment %} <a href="{% url 'bacaditempat:show_list_status' %}">
+      {% comment %} <a href="{% url 'bacaditempat:show_detail_venue' %}">
         <button class="custom-button">
-            Booking Status 
+            Kembali
         </button>
       </a> {% endcomment %}
     </div>
@@ -152,25 +152,14 @@
           </svg>
           <p class="book-name">{{ book.title }}</p>
         </div>
-        <p>{{ book.authors }}</p>
         <p>{{ book.display_authors }}</p>
-        <p>{{ book.description }}</p>
-        <p>{{ book.categories }}</p>
-        <p> Sedang dipinjam oleh: {{ book.user.full_name }}</p>
+        <p> Sedang dipinjam oleh: <b>{{ book.user.full_name }}</b></p>
       </div>
   </div>
 {% endfor %}
 
 </div>
 
-<!-- button add venue -->
-<div class="container">  
-  <a href="{% url 'bacaditempat:add_venue' %}">
-    <button class="custom-button">
-      Add Venue
-    </button>
-  </a>
-</div>
 
 
 

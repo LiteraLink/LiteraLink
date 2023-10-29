@@ -24,5 +24,6 @@ urlpatterns = [
     path('return_book/<int:book_id>/', views.return_book, name='return_book'),
     path('get-venue/', views.get_venue_json, name='get_venue_json'),
     path('ajax/rent_book/<int:book_id>/', views.pesan_buku_ajax, name='ajax_rent_book'),
-
+    path('load-more-venue/', views.load_more_venue, name='load-more-venue'),
+    path('show-detail-books/<int:id>', views.show_detail_books, name='show_detail_books'),
 ]

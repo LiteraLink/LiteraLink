@@ -10,6 +10,18 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
 
+def create_station_book(station, book):
+    return StationBook(
+        station=station,
+        bookID=book.bookID,
+        title=book.title,
+        authors=book.authors,
+        display_authors=book.display_authors,
+        description=book.description,
+        categories=book.categories,
+        thumbnail=book.thumbnail,
+    )
+
 
 @login_required(login_url='auth:signin')
 def show_station(request):
@@ -89,16 +101,7 @@ def add_station_ajax(request):
         books = sample(list(Book.objects.all()), amount)
 
         for book in books:
-            station_book = StationBook(
-                station=station,
-                bookID=book.bookID,
-                title=book.title,
-                authors=book.authors,
-                display_authors=book.display_authors,
-                description=book.description,
-                categories=book.categories,
-                thumbnail=book.thumbnail,
-            )
+            station_book = create_station_book(station, book)
             station_book.save()
 
         return HttpResponse(b"CREATED", status=201)
@@ -133,16 +136,7 @@ def add_station(request):
         books = sample(list(Book.objects.all()), amount)
 
         for book in books:
-            station_book = StationBook(
-                station=station,
-                bookID=book.bookID,
-                title=book.title,
-                authors=book.authors,
-                display_authors=book.display_authors,
-                description=book.description,
-                categories=book.categories,
-                thumbnail=book.thumbnail,
-            )
+            station_book = create_station_book(station, book)
             station_book.save()
 
         return HttpResponseRedirect(reverse('dimanasajakapansaja:show_station'))
@@ -227,6 +221,7 @@ def rent_book(request, book_id):
     
     response = HttpResponseRedirect(reverse("dimanasajakapansaja:detail", args=[station_id]))
     return response
+
 @login_required(login_url='auth:signin')
 @csrf_exempt
 def return_book(request, station_id ,book_id):
@@ -237,16 +232,7 @@ def return_book(request, station_id ,book_id):
     
     book = UserBook.objects.get(id=book_id)
     station = Station.objects.get(id=station_id)
-    returned_book = StationBook(
-        station=station,
-        bookID=book.bookID,
-        title=book.title, 
-        authors=book.authors, 
-        display_authors=book.display_authors, 
-        description=book.description, 
-        categories=book.categories, 
-        thumbnail=book.thumbnail, 
-    )
+    returned_book = create_station_book(station, book)
 
     station.rentable+=1
     station.returnable-=1
@@ -266,9 +252,24 @@ def get_category(request, station_id):
 
     return show_station_detail(request, station_id ,QUERY)
 
+def show_detail_book(request, book_title):
+    books = Book.objects.get(title=book_title)
+
+    context= {
+        'bookID':books.bookID,
+        'title' :books.title,
+        'authors' : books.authors,
+        'display_authors' : books.display_authors,
+        'description' : books.description,
+        'categories' : books.categories,
+        'thumbnail' : books.thumbnail
+    }
+    return render(request,'detailBooks.html',context)
+
 def flush(request):
     books = StationBook.objects.all()
     books.delete()
 
     response = HttpResponse("flushhhh")
     return response
+

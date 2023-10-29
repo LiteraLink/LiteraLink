@@ -1,0 +1,51 @@
+:root {
+    --primary-color:#CEDD00; /* Change this to your desired color */
+    --background-image: url("{% static 'img/Group7.png' %}");
+    }
+
+/* Change the primary button color */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Change the link color */
+a {
+    color: var(--primary-color);
+}
+
+.container-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.persegi-panjang {
+    height: 10px;
+    /* Tinggi elemen */
+    width: 100px;
+    margin-top: 10px;
+    background-color: #FFFF;
+    /* Warna latar belakang, ganti dengan warna yang Anda inginkan */
+}
+
+body {
+    font-family: 'Sora', sans-serif;
+    background-color: #126164;
+    color: white;
+}
+.wider-modal {
+    max-width: 800px; /* Adjust the width as needed */
+}
+.card-container {
+    justify-content: center;
+    align-items: center;
+}
+.card {
+    width: 90%;
+    /* margin: 5px*/
+}
+.modal-content {
+    color: #126164;
+    background-color: white; /* Change text color to ensure readability */
+}

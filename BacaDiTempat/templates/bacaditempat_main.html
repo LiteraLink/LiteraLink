@@ -10,8 +10,12 @@
   }
 
   .hero {
-    padding-top: 20px;
-    padding-bottom: 200px; 
+    background-image: url("../static/img/Group7.png");
+    padding-bottom: 260px; /* Sesuaikan dengan kebutuhan Anda */
+    background-size: 100% auto; /* Mengatur lebar gambar maksimum dan tinggi mengikuti aspek asli */
+    background-repeat: no-repeat; /* Mencegah gambar diulang */
+    background-position: center top; 
+    margin-bottom: 20px;
 
   }
 
@@ -76,6 +80,11 @@
     border-radius: 20px; 
     font-family: 'Sora', sans-serif;
     font-weight: 600;
+    margin-bottom: 20px;
+  }
+
+  .card-icons {
+    margin-top: 15px;
   }
 
   .container {
@@ -104,6 +113,9 @@
   }
 
 </style>
+
+<body style="background-color: #126164;"></body>
+
 <br>
 <div class="hero">
     <div class="container-bg" style="padding-top:150px ;" >
@@ -117,11 +129,6 @@
             Home
         </button>
       </a>
-      {% comment %} <a href="{% url 'bacaditempat:show_list_status' %}">
-        <button class="custom-button">
-            Booking Status 
-        </button>
-      </a> {% endcomment %}
     </div>
 </div>
 
@@ -144,20 +151,22 @@
   <!-- Kemudian tampilkan data venue di dalam card-container -->
   {% for venue in venues %}
   <div class="card">
+  
       <!-- Tambahkan container untuk ikon edit dan delete -->
-      <div class="card-icons">
-        <a href="{% url 'bacaditempat:edit_venue' venue.pk %}">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
-            <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.293l6.5-6.5zm-9.761 5.854l-1.48 3.708 3.708-1.48L5.5 9.293 4.207 10.5l-1.475.854z"/>
-          </svg>
+   
+        <div class="card-icons">
+          <a href="{% url 'bacaditempat:edit_venue' venue.pk %}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+              <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.293l6.5-6.5zm-9.761 5.854l-1.48 3.708 3.708-1.48L5.5 9.293 4.207 10.5l-1.475.854z"/>
+            </svg>
 
-        </a>
-        <a href="{% url 'bacaditempat:delete_venue' venue.pk %}">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
-            <path d="M5.5 5.5A.5.5 0 0 1 6 6h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1 0-1h-.5a.5.5 0 0 1-.5-.5zm2.5 4.5a.5.5 0 0 0-1 0v3a.5.5 0 0 0 1 0v-3zm3 0a.5.5 0 0 0-1 0v3a.5.5 0 0 0 1 0v-3zM5.354 2.354a.5.5 0 0 1 0-.708l1-1a.5.5 0 0 1 .708 0l1 1a.5.5 0 0 1-.708.708L6.5 1.207 5.854 1.854a.5.5 0 0 1-.5.5H5v2a.5.5 0 0 1-.5.5A.5.5 0 0 1 4 3V1a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2a.5.5 0 0 1-.5.5A.5.5 0 0 1 9 3V1.5h-.146a.5.5 0 0 1-.354-.146L7.5.793 6.854 1.146a.5.5 0 0 1-.708-.708l1-1a.5.5 0 0 1 .708 0L9.793 1h.707a1 1 0 0 1 1 1v2a.5.5 0 0 1 .5.5V5H3V3.5a.5.5 0 0 1 .5-.5z"/>
-          </svg>
-        </a>
-      </div>
+          </a>
+          <a href="{% url 'bacaditempat:delete_venue' venue.pk %}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+              <path d="M5.5 5.5A.5.5 0 0 1 6 6h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1 0-1h-.5a.5.5 0 0 1-.5-.5zm2.5 4.5a.5.5 0 0 0-1 0v3a.5.5 0 0 0 1 0v-3zm3 0a.5.5 0 0 0-1 0v3a.5.5 0 0 0 1 0v-3zM5.354 2.354a.5.5 0 0 1 0-.708l1-1a.5.5 0 0 1 .708 0l1 1a.5.5 0 0 1-.708.708L6.5 1.207 5.854 1.854a.5.5 0 0 1-.5.5H5v2a.5.5 0 0 1-.5.5A.5.5 0 0 1 4 3V1a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2a.5.5 0 0 1-.5.5A.5.5 0 0 1 9 3V1.5h-.146a.5.5 0 0 1-.354-.146L7.5.793 6.854 1.146a.5.5 0 0 1-.708-.708l1-1a.5.5 0 0 1 .708 0L9.793 1h.707a1 1 0 0 1 1 1v2a.5.5 0 0 1 .5.5V5H3V3.5a.5.5 0 0 1 .5-.5z"/>
+            </svg>
+          </a>
+        </div>
 
       <div class="card-body">
         <div class="venue-info">
@@ -174,16 +183,64 @@
 
 </div>
 
+{% if load_button %}
+<div class="d-flex justify-content-center mt-5 mb-5">
+  <button class="custom-button" id="load-More" data-total="{{ total_venue }}" data-limit="3">
+  Load more
+  <span id="loading" role="status"></span>
+  </button>
+</div>
+{% endif %}
+
 <!-- button add venue -->
 <div class="container">  
-  <a href="{% url 'bacaditempat:add_venue' %}">
-    <button class="custom-button">
-      Add Venue
-    </button>
-  </a>
+  {% if is_admin %}
+    <a href="{% url 'bacaditempat:add_venue' %}">
+      <button class="custom-button">
+        Add Venue
+      </button>
+      <br>
+    </a>
+  {% endif %}
 </div>
 
 
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>  
+<script>
+    $(document).ready(function () {
+      $("#load-More").on('click', function () {
+        var _jumlahVenue = $(".card").length;
+        var _limit = $(this).attr('data-limit');
+        var _total = $(this).attr('data-total');
+
+        $.ajax({
+          url: '/bacaditempat/load-more-venue',
+          data: {
+            limit: _limit,
+            offset: _jumlahVenue
+          },
+          dataType: 'json',
+          beforeSend: function () {
+            $('#load-More').attr('disabled', true);
+            $('#loading').addClass('spinner-border spinner-border-sm');
+          },
+          success: function (res) {
+            $('.venue-list').append(res.data);
+            $('#load-More').attr('disabled', false);
+            $('#loading').removeClass('spinner-border spinner-border-sm');
+
+            if ($('.card').length == _total) {
+              $('#load-More').remove();
+            }
+          }
+        })
+      })
+    })
+        
+</script>
 
 {% endblock content %}
 

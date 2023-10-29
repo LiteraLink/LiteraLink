@@ -1,152 +1,38 @@
 {% extends 'base.html' %}
-{% block content %}
 {% load static %}
 
-<style>
-  body {
-    font-family: 'Sora', sans-serif;
-    background-color: #126164;
-    color: #fff;
-  }
+{% block meta %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+<script type="text/javascript" src="{% static 'js/pesan.js' %}" defer></script>
+{% endblock meta %}
 
-  .hero {
-    padding-top: 20px;
-    padding-bottom: 200px; 
-
-  }
-
-  .persegi-panjang {
-    height: 10px; /* Tinggi elemen */
-    width: 100px;
-    margin-top: 10px;
-    background-color: #FFFF; /* Warna latar belakang, ganti dengan warna yang Anda inginkan */
-    }
-
-  .container-bg{
-    max-width: 960px;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-
-  .custom-bg {
-    background-color: #CEDD00; 
-    color: #0B7377; 
-  }
-
-  .card-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    grid-gap: 5px;
-  }
-
-  .card {
-    background-color: #FFF;
-    color: #0B7377;
-    border-radius: 20px;
-    padding: 0px 5px;
-    margin-bottom: 20px;
-  }
-
-  .card-body {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-
-  .custom-h4 {
-    font-family: 'Manrope', sans-serif;
-    max-width: 600px;
-    text-align: center;
-    margin: 0 auto;
-    line-height: 1.4; 
-    font-size: 18px;
-  }
-
-  .custom-button {
-    background-color: #CEDD00; 
-    color: #0B7377; 
-    padding: 10px 20px; 
-    margin-top: 20px; 
-    border: none; 
-    border-radius: 20px; 
-    font-family: 'Sora', sans-serif;
-    font-weight: 600;
-  }
-
-  .container {
-    display: flex;
-    justify-content: center; 
-    align-items: center; 
-  }
-</style>
-
-<br>
-<div class="container">
+{% block content %}
+<body style="background-color: #126164;color: #fff;">
+  <br>
+  <div class="container">
     <h3 style="font-weight: 700; text-align: center;">
       Form Pengantaran Buku
     </h3>
   </div>
   <div class="container">
     <div class="persegi-panjang"></div>
-</div>
-<br>
-<div class="container-fluid" style="margin-bottom: 20px;max-width: 400px;">
-  <form id="form" onsubmit="return false;">
-    {% csrf_token %}
-    {{form.as_p}}
-    <div class="container">
+  </div>
+  <br>
+  <div class="container-fluid" style="margin-bottom: 20px;max-width: 400px;">
+    <form id="form" onsubmit="return false;">
+      {% csrf_token %}
+      {{form.as_p}}
+      <div class="container">
         <a href="{% url 'antar:show_list_books' %}">
-            <button type="button" class="btn custom-bg" type="button">Kembali</button>
-          </a>
-        <!-- <button type="reset" class="custom-button" style="margin-right: 10px; margin-left: 10px;">Reset</button> -->
-    </div>
-    <br>
-    <div class="container">
-      <button type="button" class="btn custom-bg" id="button_add">Antar Sekarang</button>
-    </div>
-  </p>
-</div>
-
-<script>
-    async function getProducts() {
-        return fetch("{% url 'antar:get_product_json' %}").then((res) => res.json())
-    }
-
-    async function deleteProduct(id) {
-        const response = await fetch(`/delete_product_ajax/${id}`);
-        refreshProducts();
-    }
-
-    function addProduct(id_buku) {
-      fetch(`/antar/antar-buku-ajax/${id_buku}`, {
-        method: "POST",
-        body: new FormData(document.querySelector('#form'))
-      })
-      .then(response => {
-        if (response.ok) {
-          // Redirect setelah produk berhasil ditambahkan
-          console.log("redirecting")
-          window.location.href = "{% url 'antar:show_list_checkout_all' %}";
-        } else {
-          // Tangani kesalahan jika permintaan gagal.
-          console.error("Gagal menambahkan produk.");
-        }
-      })
-      .catch(error => {
-        console.error("Terjadi kesalahan: " + error);
-      });
-
-      document.getElementById("form").reset();
-      return false;
-    }
-
-    // Tambahkan event listener untuk memanggil addProduct saat tombol diklik.
-    document.getElementById("button_add").addEventListener("click", function() {
-      addProduct({{ id_buku }});
-    });
-
-
-</script>
+          <button type="button" class="btn" style="background-color: #CEDD00;color: #0B7377;"
+            type="button">Kembali</button>
+        </a>
+      </div>
+      <br>
+      <div class="container">
+        <button type="button" class="btn" style="background-color: #CEDD00;color: #0B7377;" id="button_add" onclick="addProduct({{id_buku}})">Antar Sekarang</button>
+      </div>
+      </p>
+  </div>
+</body>
 {% endblock content %}
