@@ -1,27 +1,40 @@
 {% extends 'base.html' %} 
 
+
+
 {% block content %}
 
 <head>
+    {% load static %} 
+    <!-- <script src="../static/mainForum.js" defer></script>   -->
+    <script src="{% static 'mainForum.js' %}" defer></script>
+    <script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}" defer></script>
+    <link rel="stylesheet" href="{% static 'mainForum.css' %}">
     <title>Bibliofilia</title>
 </head>
 <body>
-    <nav class = wrap>
-        <div class = brand>
-            <h3>Welcome to Bibliofilia</h3> 
-            <h5> {{ name }} </h5>
-        </div>
-    </nav>
-
     <div class="content">
-        <table id="list_of_forms"></table>
- 
+        <div id="userRole" data-role="{% if member.role %}{{ member.role }}{% endif %}"></div>
+
+        <div class="container my-4">
+            <div class="row">
+                <div class="col-6 py-5">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Create New Forum</button>
+                </div>
+            </div>
+            <div class="forumHead" id="forumHead"></div>
+            <div class="row">
+                <div class="col-12">
+                    <table class="table table-hover p-5 " id="list_of_forms"></table>
+                </div>
+            </div>
+        </div>
         <div class="modal fade" id="staticBackdrop" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog wider-modal">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Add New Item</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Add New Forum</h1>
+                        <button type="button" id="btnModal" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form id="form" onsubmit="return false;">
@@ -34,110 +47,24 @@
                                 <label for="forumsDescription" class="col-form-label">Description:</label>
                                 <textarea class="form-control" id="forumsDescription" name="forumsDescription"></textarea>
                             </div>
-                            <!-- <div class="mb-3">
-                                <label for="bookPicture" class="col-form-label">Description:</label>
-                                <input type="file" id="bookPicture" name="bookPicture" accept="image/*">
-                                <input type="submit">
-                            </div> -->
+                            <div class="mb-3">
+                                <label for="userReview" class="col-form-label">Message:</label>
+                                <textarea class="form-control" id="userReview" name="userReview"></textarea>
+                            </div>
                         </form>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="button_add" data-bs-dismiss="modal">Add Item</button>
+                        <button type="button" class="btn btn-primary" id="button_add" data-bs-dismiss="modal">Add Forum</button>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="AddItem-button-container">
-            <button type="button" class="Add-button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Item by AJAX</button>
-        </div> 
-        <h4 id="itemCount"></h4>
         <br />
-
     </div>
 
 
 </body>
 <!-- <h1>Welcome to Bibliofilia</h1> -->
 
-
-<script>
-    async function getForums() {
-        return fetch("{% url 'bibliofilia:get_Forum_json' %}").then((res) => res.json())
-    }
-    
-    async function refreshForums() {
-        document.getElementById("list_of_forms").innerHTML = ""
-        const Forums = await getForums()
-        // const forumCountElement = document.getElementById("forumCount");
-        // const total_forums = Forums.length; 
-        // forumCountElement.innerHTML = `Kamu menyimpan ${total_forums} ${total_forums === 1 ? 'forum' : 'Forums'} pada aplikasi ini`;
-        let htmlString =`
-        <tr style="text-align: center;">
-            <th>Forum Name</th>
-            <th>description</th>
-            <th>DEBUG</th>
-        </tr>
-        `
-        Forums.forEach((forum) => {
-            htmlString += `
-            
-            <tr onclick ="window.location='childforum.html?forum_id=${forum.pk}';">
-                <td>${forum.fields.BookName}</td>
-                <td>${forum.fields.forumsDescription}</td>
-                <td>
-                    <div class="display-btn">
-                        <a>
-                            <button type="submit" class="remove-btn" onclick="deleteForum(${forum.pk})">🗑</button>
-                        </a>                                   
-                    </div>
-                </td>
-            </tr>
-`        })
-        
-        document.getElementById("list_of_forms").innerHTML = htmlString
-    }
-
-    refreshForums()
-
-    function addForums() {
-        fetch("{% url 'bibliofilia:add_Forum_ajax' %}", {
-            method: "POST",
-            body: new FormData(document.querySelector('#form'))
-        }).then(refreshForums)
-
-        document.getElementById("form").reset()
-        return false
-    }
-
-    // function addAmount(forum_id) {
-    //     fetch(`add_amount/${forum_id}/`, {
-    //         method: "POST",
-    //     }).then(refreshForums)
-    //     return false
-    // }
-
-    // function reduceAmount(forum_id) {
-    //     fetch(`reduce_amount/${forum_id}/`, {
-    //         method: "POST",
-    //     }).then(refreshForums)
-    //     return false
-    // }
-
-    function deleteForum(forum_id) {
-        fetch(`delete_Forum/${forum_id}/`, {
-            method: "DELETE",
-        }).then(refreshForums)
-        return false
-    }
-
-    document.getElementById("button_add").onclick = addForums
-
-    const myModal = new bootstrap.Modal(document.getElementById("staticBackdrop"));
-
-    myModal._element.addEventListener('hidden.bs.modal', () => {
-    // Clear the form fields by resetting the form
-    document.getElementById("form").reset();
-    });
-</script>
 {% endblock %}

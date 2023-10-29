@@ -1,0 +1,52 @@
+:root {
+--primary-color:#CEDD00; /* Change this to your desired color */
+--background-image: url("{% static 'img/Group7.png' %}");
+}
+
+/* Change the primary button color */
+.btn-primary {
+    background-color: var(--primary-color);
+border-color: var(--primary-color);
+}
+
+/* Change the link color */
+a {
+    color: var(--primary-color);
+}
+
+
+/* Add more styles as needed */
+
+
+
+body {
+    font-family: 'Sora', sans-serif;
+    background-color: #126164;
+    color: black
+  }
+
+.forumHead{
+    color: white;
+}
+
+.wider-modal {
+    max-width: 800px;
+}
+
+td:first-child {    
+    max-width: 560px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: '...';}
+tr{
+    border-top: 5px solid black;
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+.d-flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

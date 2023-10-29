@@ -2,19 +2,23 @@ import datetime
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
-from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse
 from django.contrib import messages
+from authentication.forms import SignUpForm
+from authentication.models import UserProfile
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
 def signup(request):
-    form = UserCreationForm()
+    form = SignUpForm()
 
     if request.method == "POST":
-        form = UserCreationForm(request.POST)
+        form = SignUpForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            user_profile = UserProfile(user=user, full_name=user.full_name, email=user.email, role=user.role)
+            user_profile.save()
             messages.success(request, 'Your account has been successfully created!')
             return redirect('auth:signin')
     context = {'form':form}
@@ -41,3 +45,8 @@ def signout(request):
     logout(request)
     response = redirect('auth:signin')
     return response
+
+@login_required(login_url='auth:signin')
+def show_profile(request):
+    profile = UserProfile.objects.get(user=request.user)
+    return render(request, 'profile.html', {'profil':profile})

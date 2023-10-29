@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<style>
+  body {
+    font-family: 'Sora', sans-serif;
+    background-color: #126164;
+    color: #fff;
+  }
+
+  .hero {
+    padding-top: 20px;
+    padding-bottom: 200px; 
+
+  }
+
+  .persegi-panjang {
+    height: 10px; /* Tinggi elemen */
+    width: 100px;
+    margin-top: 10px;
+    background-color: #FFFF; /* Warna latar belakang, ganti dengan warna yang Anda inginkan */
+    }
+
+  .container-bg{
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .custom-bg {
+    background-color: #CEDD00; 
+    color: #0B7377; 
+  }
+
+  .card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    grid-gap: 8px;
+    padding: 100px;
+  }
+
+  .card {
+    background-color: #FFF;
+    color: #0B7377;
+    border-radius: 20px;
+    padding: 0px 5px;
+    margin-bottom: 20px;
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .custom-h4 {
+    font-family: 'Manrope', sans-serif;
+    max-width: 600px;
+    text-align: center;
+    margin: 0 auto;
+    line-height: 1.4; 
+    font-size: 18px;
+  }
+
+  .custom-button {
+    background-color: #CEDD00; 
+    color: #0B7377; 
+    padding: 10px 20px; 
+    margin-top: 20px; 
+    border: none; 
+    border-radius: 20px; 
+    font-family: 'Sora', sans-serif;
+    font-weight: 600;
+  }
+
+  .update-button {
+    background-color: #CEDD00; 
+    color: #0B7377; 
+    padding: 10px 20px; 
+    border: none; 
+    border-radius: 20px; 
+    font-family: 'Sora', sans-serif;
+    font-weight: 600;
+  }
+
+  .container {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+  }
+
+  .form-control {
+    width: 500px; /* Sesuaikan dengan ukuran yang Anda inginkan */
+    height: 50px;
+    font-size: 14px; /* Sesuaikan dengan ukuran font yang Anda inginkan */
+    justify-content: center; 
+    align-items: center; 
+
+}
+</style>
+
+<br>
+<div class="container">
+    <h3 style="font-weight: 700; text-align: center;">
+      Daftar Checkout Pengantaran Buku
+    </h3>
+  </div>
+  <div class="container">
+    <div class="persegi-panjang"></div>
+  </div>
+  <br>
+  <br>
+  <div class="container">
+
+    <form class="d-flex" method="GET" action="{% url 'antar:show_list_checkout_filter' %}">
+      <input class="form-control me-2" name="query" type="search" placeholder="Search" aria-label="Search">
+      <button type="submit" class="btn custom-button" style="margin-top: -5px;">Search</button>
+    </form>
+  </div>
+  <br>
+  <div class="card-container" id="personCheckout">
+</div>
+
+<script>
+  async function getPersons() {
+      return fetch("{% url 'antar:get_person_json' %}").then((res) => res.json())
+  }
+
+  async function refreshProducts(role) {
+    console.log("refreshed")
+    const persons = await getPersons();
+    console.log(role)
+    console.log(persons)
+    const personCheckout = document.getElementById("personCheckout");
+    
+    if (persons.length === 0) {
+        // Jika persons kosong, tampilkan pesan "Belum ada pengantaran buku"
+        const emptyMessage = document.createElement("p");
+        emptyMessage.style= "text-align: center;"
+        emptyMessage.className= "container"
+        emptyMessage.textContent = "";
+        personCheckout.appendChild(emptyMessage);
+    } else {
+        // Jika ada persons, tampilkan daftar pengantaran buku
+        persons.forEach(person => {
+            console.log(person)
+            const card = document.createElement("div");
+            card.className = "card";
+
+            card.innerHTML = `
+                <h5 class="card-header" style="text-align: center;">${person.fields.status_pesanan}</h5>
+                <div class="card-body" style="text-align: center;">
+                    <h5 class="card-title" style="text-align: center;">${person.fields.nama_lengkap}</h5>
+                    <p class="card-text">
+                        Memesan buku ${person.fields.nama_buku_dipesan}
+                        <div class=container style="margin-bottom: 10px;">
+                          Jumlah Buku:
+                        </div>
+                        <div class=container>
+                          <a href="/antar/sub_stock/${person.pk}">
+                                  <button type="submit" class="update-button" ${role === 'A' ? 'disabled' : ''}>
+                                      -
+                                  </button>
+                              </a>
+                          <div style="margin-left: 20px; margin-right: 20px;" ${role === 'A' ? 'disabled' : ''}>
+                                  ${person.fields.jumlah_buku_dipesan}
+                          </div> 
+                          <a href="/antar/add_stock/${person.pk}">
+                                  <button type="submit" class="update-button">
+                                      +
+                                  </button>
+                              </a>
+                        </div>
+                        <br>
+                        <div class=container>
+                        Total pembayaran = ${person.fields.total_payment}
+                        </div>
+                    </p>
+                    <a href="/antar/show-detail/${person.pk}" >
+                            <button class="btn custom-bg" type="button"> Detail</button>
+                        </a>
+                    <br>
+                    {% if role == "A" %}
+                      <a>
+                            <button class="btn custom-bg" type="button" disabled> Batalkan Pesanan</button>
+                        </a>
+                    {% else %}
+                      <a href="/antar/delete-product-ajax/${person.pk}">
+                            <button class="btn custom-bg" type="button"> Batalkan Pesanan</button>
+                        </a>
+                    {% endif %}
+                </div>
+            `;
+
+            personCheckout.appendChild(card);
+        });
+      }
+      
+    }
+
+    const role = "{{ role }}"; // Mengambil nilai 'role' dari template
+    refreshProducts(role)
+</script>
+{% endblock content %}

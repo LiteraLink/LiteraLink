@@ -1,1 +1,184 @@
-<p>test</p>
+{% extends 'base.html' %} 
+
+
+
+{% block content %}
+    
+<head>
+    {% load static %}
+    <script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+    <title>Bibliofilia</title>
+    <style>
+        .wider-modal {
+            max-width: 800px; /* Adjust the width as needed */
+        }
+        /* */
+    </style>
+</head>
+<body>
+    <nav class = wrap>
+        <div class = brand>
+            <h3>Welcome to Bibliofilia</h3> 
+            <h5> {{ forum_title }} </h5>
+            <h5> {{ forum_head_msg|safe }} </h5>
+            <h5> {{ forum_id }} </h5>
+        </div>
+    </nav>
+
+    <div class="content">
+        <div class="row" id="list_of_replies">
+            <!-- Replies will be displayed here as cards -->
+        </div>
+ 
+        <div class="modal fade" id="staticBackdrop" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog wider-modal"">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Add New Item</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="form" onsubmit="return false;">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="text" class="col-form-label">Replies:</label>
+                                <textarea class="form-control" id="text" name="text"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="button_add" data-bs-dismiss="modal">Add Item</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="AddItem-button-container">
+            <button type="button" class="Add-button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Replies</button>
+        </div> 
+        <h4 id="itemCount"></h4>
+        <br />
+
+    </div>
+</body>
+
+
+<script>
+    const main_forum_id = {{ forum.id }};
+    async function getForumsReplies() {
+        return fetch(`{% url 'bibliofilia:get_ForumReply_json' %}`)
+            .then((res) => res.json());
+    }
+    async function refreshForums() {
+        document.getElementById("list_of_replies").innerHTML = "";
+        const ForumsReplies = await getForumsReplies(); // Use the correct variable name
+        let userRole = "{% if member.role %}{{ member.role }}{% endif %}";
+
+        ForumsReplies.forEach((reply) => {
+            if (reply.fields.forum == main_forum_id) {
+                // Create a card element
+                const card = document.createElement("div");
+                card.className = "col-md-4 mb-4"; // Adjust the class as needed
+                console.log(reply)
+                // Create the card content
+                card.innerHTML = `
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">${reply.fields.username}</h5>
+                            <p class="card-text">${reply.fields.text}</p>
+                        </div>
+            
+                        <div class="card-footer">${reply.fields.timestamp}
+                            ${userRole === 'A' ? `<a>
+                                <button type="submit" class="remove-btn" onclick="deleteForum(${reply.pk})">🗑</button>
+                            </a>` : ''}
+                        </div>
+                    </div>
+                `;
+
+                // Append the card to the list_of_replies
+                document.getElementById("list_of_replies").appendChild(card);
+            }
+        });
+
+    }
+
+    refreshForums();
+
+    function addReplies(forum_id) {    
+        // Append the forum_id as a query parameter to the URL
+        const url = `{% url 'bibliofilia:add_replies_ajax' %}?forum_id=${forum_id}`;
+    
+        fetch(url, {
+            method: "POST",
+            body: new FormData(document.querySelector('#form'))
+        })
+        .then(response => {
+            if (response.status === 201) {
+                // Reply was created successfully
+                refreshForums()
+                return response.json();
+            } else {
+                console.error("Error: " + response.statusText);
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    
+        document.getElementById("form").reset();
+        return false;
+    }
+
+    function deleteForum(forum_id) {
+        fetch(`/bibliofilia/delete_replies/${forum_id}/`, {
+            method: "DELETE",
+        }).then(refreshForums)
+        return false
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const basicToolbar = [
+        { name: 'document', items: ['Source', '-', 'Save', 'NewPage', 'Preview', 'Print', '-', 'Templates'] },
+        { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'] },
+        { name: 'styles', items: ['Format', 'Font', 'FontSize'] },
+        { name: 'basicstyles', items: ['Bold', 'Italic', 'RemoveFormat', 'NumberedList', 'BulletedList'] }, // Add Bold and Italic
+        { name: 'insert', items: ['Image', 'Table', 'HorizontalRule'] }, // Add Image
+        { name: 'links', items: ['Link', 'Unlink'] },
+        { name: 'tools', items: ['Maximize', 'ShowBlocks', 'About'] },
+        // Add more basic toolbar items as needed
+        ];
+        
+        // Initialize CKEditor for the "text" div
+        CKEDITOR.replace('text', {
+            toolbar: basicToolbar,
+        });
+
+        // Function to reset CKEditor content
+        function resetCKEditor() {
+            if (CKEDITOR.instances.text) {
+                CKEDITOR.instances.text.setData(''); // Clear CKEditor content
+            }
+        }
+
+        const form = document.getElementById("form");
+        
+        // Attach the resetCKEditor function to the modal's "show" event
+        document.getElementById("button_add").onclick = function() {
+            text.value = CKEDITOR.instances.text.getData();
+            console.log("Masuk",text.value)
+
+
+            addReplies({{ forum.id }});
+            refreshForums( main_forum_id );
+            resetCKEditor()
+        }});
+
+    
+
+    const myModal = new bootstrap.Modal(document.getElementById("staticBackdrop"));
+
+    myModal._element.addEventListener('hidden.bs.modal', () => {
+    // Clear the form fields by resetting the form
+    document.getElementById("form").reset();
+    });
+</script>
+{% endblock %}
