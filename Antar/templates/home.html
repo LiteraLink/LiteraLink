@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<style>
+  body {
+    font-family: 'Sora', sans-serif;
+    background-color: #126164;
+    color: #fff;
+  }
+
+  .hero {
+    background-image: url("../static/img/Group7.png");
+    padding-bottom: 260px; /* Sesuaikan dengan kebutuhan Anda */
+    background-size: 100% auto; /* Mengatur lebar gambar maksimum dan tinggi mengikuti aspek asli */
+    background-repeat: no-repeat; /* Mencegah gambar diulang */
+    background-position: center top; 
+  }
+
+  .persegi-panjang {
+    height: 10px; /* Tinggi elemen */
+    width: 100px;
+    margin-top: 10px;
+    background-color: #FFFF; /* Warna latar belakang, ganti dengan warna yang Anda inginkan */
+    }
+
+  .container-bg{
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .custom-bg {
+    background-color: #CEDD00; 
+    color: #0B7377; 
+  }
+
+  .card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-gap: 5px;
+    padding: 80px;
+  }
+
+  .card {
+    background-color: #FFF;
+    color: #0B7377;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    border-radius: 20px;
+    padding: 0px 5px;
+    margin-bottom: 20px;
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .custom-h4 {
+    font-family: 'Manrope', sans-serif;
+    max-width: 600px;
+    text-align: center;
+    margin: 0 auto;
+    line-height: 1.4; 
+    font-size: 18px;
+  }
+
+  .custom-button {
+    background-color: #CEDD00; 
+    color: #0B7377; 
+    padding: 10px 20px; 
+    margin-top: 20px; 
+    border: none; 
+    border-radius: 20px; 
+    font-family: 'Sora', sans-serif;
+    font-weight: 600;
+  }
+
+  .container {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+  }
+</style>
+
+<div class="hero">
+  <br>
+    <div class="container-bg" style="padding-top:150px ;" >
+      <h2 style="font-weight: 600; text-align: center;">Antar</h2>
+      <h4 class="custom-h4">
+        Layanan pengantaran buku ke alamat yang diinginkan </h4>
+    </div>
+    <div class="container">
+      <a href="{% url 'antar:show_list_checkout_all' %}">
+        <button class="custom-button">
+            List Pengantaran Buku 
+        </button>
+      </a>
+    </div>
+</div>
+<div class="container">
+  <h3 style="font-weight: 700; text-align: center;">
+    Daftar Buku
+  </h3>
+</div>
+<div class="container">
+  <div class="persegi-panjang"></div>
+</div>
+<br>
+<br>
+<div class="container">
+  <form class="d-flex" method="GET" action="{% url 'antar:show_list_books_filter' %}">
+    <input class="form-control me-2" name="queryBook" type="search" placeholder="Search" aria-label="Search">
+    <button type="submit" class="btn custom-button" style="margin-top: -5px;">Search</button>
+  </form>
+</div>
+<br>
+<div class="card-container" id="bookContainer">
+</div>
+
+<script>
+    async function getProducts() {
+        return fetch("{% url 'antar:get_product_json' %}").then((res) => res.json())
+    }
+
+    async function refreshProducts(role) {
+        const books = await getProducts()
+        const bookContainer = document.getElementById("bookContainer");
+
+        books.forEach(book => {
+            const card = document.createElement("div");
+            card.className = "card";
+            card.style = "width: 250px; height: 400px;";
+
+            card.innerHTML = `
+                <div style="text-align: center;">
+                    <img class="card-img-top" src="${book.fields.thumbnail}" alt="Card image cap" style="max-width: 150px; max-height: 200px; border-radius: 0; margin-top: 15px;">
+                </div>
+                <div class="card-body">
+                    <div>
+                        <h5 class="card-title" style="font-size: 15px; text-align: center; font-weight: 700;">${book.fields.title}</h5>
+                        <p class="card-text" style="font-size: 15px; text-align: center;">Author: ${book.fields.display_authors}</p>
+                    </div>
+                    <div class="container">
+                      {% if role == "A" %}
+                      <a>
+                            <button class="btn custom-bg" type="button" disabled> Antar Buku Ini</button>
+                        </a>
+                      {% else %}
+                      <a href="pemesanan-buku/${book.pk}">
+                            <button class="btn custom-bg" type="button"> Antar Buku Ini</button>
+                        </a>
+                      {% endif %}
+                        
+                    </div>
+                </div>
+            `;
+
+            bookContainer.appendChild(card);
+        });
+    }
+
+    const role = "{{ role }}"; // Mengambil nilai 'role' dari template
+    refreshProducts(role)
+</script>
+
+{% endblock content %}

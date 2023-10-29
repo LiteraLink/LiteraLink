@@ -1,0 +1,111 @@
+.body {
+    font-family: 'Sora', sans-serif;
+    background-color: #126164;
+    color: #fff;
+}
+
+.hero {
+    padding-top: 20px;
+    padding-bottom: 200px;
+
+}
+
+.persegi-panjang {
+    height: 10px;
+    /* Tinggi elemen */
+    width: 100px;
+    margin-top: 10px;
+    background-color: #FFFF;
+    /* Warna latar belakang, ganti dengan warna yang Anda inginkan */
+}
+
+.container-bg {
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.custom-bg {
+    background-color: #CEDD00;
+    color: #0B7377;
+}
+
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    grid-gap: 8px;
+    padding: 100px;
+}
+
+.card {
+    background-color: #FFF;
+    color: #0B7377;
+    border-radius: 20px;
+    padding: 0px 5px;
+    margin-bottom: 20px;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.custom-h4 {
+    font-family: 'Manrope', sans-serif;
+    max-width: 600px;
+    text-align: center;
+    margin: 0 auto;
+    line-height: 1.4;
+    font-size: 18px;
+}
+
+.custom-button {
+    background-color: #CEDD00;
+    color: #0B7377;
+    padding: 10px 20px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 20px;
+    font-family: 'Sora', sans-serif;
+    font-weight: 600;
+}
+
+.update-button {
+    background-color: #CEDD00;
+    color: #0B7377;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    font-family: 'Sora', sans-serif;
+    font-weight: 600;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.bentuk {
+    width: auto;
+    /* Lebar container */
+    height: auto;
+    padding: 20px;
+    background-color: #0B7377;
+    ;
+    /* Warna latar belakang putih */
+    border-radius: 20px
+}
+
+.form-control {
+    width: 500px;
+    /* Sesuaikan dengan ukuran yang Anda inginkan */
+    height: 50px;
+    font-size: 14px;
+    /* Sesuaikan dengan ukuran font yang Anda inginkan */
+    justify-content: center;
+    align-items: center;
+}

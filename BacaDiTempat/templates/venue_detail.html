@@ -1,0 +1,432 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<style>
+  body {
+    font-family: 'Sora', sans-serif;
+    background-color: #126164;
+    color: #fff;
+  }
+
+  .hero {
+    padding-top: 20px;
+    padding-bottom: 200px; 
+
+  }
+
+  .persegi-panjang {
+    height: 10px; /* Tinggi elemen */
+    width: 100px;
+    margin-top: 10px;
+    background-color: #FFFF; /* Warna latar belakang, ganti dengan warna yang Anda inginkan */
+    }
+
+  .container-bg{
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .custom-bg {
+    background-color: #CEDD00; 
+    color: #0B7377; 
+  }
+
+  .card-container-detail {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 700px));
+    grid-gap: 10px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    border-radius: 20px;
+    padding: 0px 5px;
+    margin-bottom: 20px;
+    flex-direction: column; /* Menata item-item secara vertikal */
+    align-items: center; /* Menyelaraskan item-item di tengah secara horizontal */
+  }
+  .card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-gap: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .card {
+    background-color: #FFF;
+    color: #0B7377;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    border-radius: 20px;
+    padding: 0px 5px;
+    margin-bottom: 20px;
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .card-foot {
+    display: flex;
+    justify-content: space-between; /* memberikan jarak antar button */
+    align-items: center; /* menyelaraskan button secara vertikal */
+    flex-wrap: wrap; /* mengizinkan item untuk wrap jika tidak ada ruang */
+    padding-bottom: 20px;
+    gap: 10px;
+  }
+
+  .custom-h4 {
+    font-family: 'Manrope', sans-serif;
+    max-width: 600px;
+    text-align: center;
+    margin: 0 auto;
+    line-height: 1.4; 
+    font-size: 18px;
+  }
+
+  .custom-button {
+    background-color: #CEDD00; 
+    color: #0B7377; 
+    padding: 10px 20px; 
+    margin-top: 20px; 
+    border: none; 
+    border-radius: 20px; 
+    font-family: 'Sora', sans-serif;
+    font-weight: 600;
+  }
+
+  .container {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+  }
+
+  .venue-info {
+    display: flex;
+    align-items: center; /* Menyelaraskan ikon dan teks secara vertikal */
+    gap: 10px; /* Jarak antara ikon dan teks */
+  }
+
+  .venue-icon {
+      flex-shrink: 0; /* Menghindari ikon untuk menyusut jika ada kekurangan ruang */
+  }
+
+  .venue-name {
+      padding-top: 20px;
+      font-weight: bold;
+      font-size: 24px;  /* Anda bisa mengatur ukuran sesuai keinginan */
+      text-align: left;
+      margin: 0; /* Menghapus margin default dari elemen <p> */
+  }
+
+  .venue-list {
+      padding: 80px;  /* Anda dapat menyesuaikan nilai padding sesuai keinginan */
+  }
+
+</style>
+
+<br>
+<div class="hero">
+    <div class="container-bg" style="padding-top:150px ;" >
+      <h2 style="font-weight: 600; text-align: center;">BacaDiTempat</h2>
+      <h4 class="custom-h4">
+        Berikut merupakan detail lokasi yang anda pilih </h4>
+    </div>
+    <div class="container">
+      <a href="{% url 'main:show_main' %}">
+        <button class="custom-button">
+            Home
+        </button>
+      </a>
+      <a href="{% url 'bacaditempat:show_list_status'  venue.pk %}">
+        <button class="custom-button">
+            Booking Status 
+        </button>
+      </a>
+      <br>
+      
+    </div>
+</div>
+
+<div class="container">
+  <h3 style="font-weight: 700; text-align: center;">
+    Detail Venue
+  </h3>
+</div>
+
+<!-- Tempatkan persegi panjang di sini -->
+<div class="container">
+  <div class="persegi-panjang"></div>
+  <br>
+</br>
+</div>
+
+<!-- Kontainer untuk semua card -->
+<div class="card-container-detail">
+
+    <div class="card mt-3">
+        <!-- Header Card -->
+        <div class="venue-name">
+            {{ venue.place_name }}
+        </div>
+        
+        <!-- Body Card -->
+        <div class="card-body">
+            <div class="row">
+                <!-- Map Location -->
+                <div class="col-md-6">
+                    <img src="{{ venue.map_location.url }}" alt="Lokasi {{ venue.place_name }}" class="img-fluid mb-3">
+                </div>
+    
+                <!-- Informasi Venue -->
+                <div class="col-md-6">
+                    <!-- Jam Operasional -->
+                    <div class="mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock" viewBox="0 0 16 16">
+                            <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+                            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+                        </svg>
+                        <span>Jam Operasional : {{ venue.venue_open }}</span>
+                    </div>
+                    
+                    <!-- Alamat Venue -->
+                    <div class="mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
+                            <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+                        </svg>
+                        <span>Alamat :</span>
+                        <br>
+                        {{ venue.address }}
+                        </br>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer Card -->
+        <div class="card-foot">
+            <a href="#daftar-buku" class="btn btn-primary custom-button">Lihat Buku</a>
+            {% if venue.returnable == 0 %}
+                <button class="btn btn-secondary custom-button" disabled>Kembalikan Buku</button>
+            {% else %}
+                <button class="btn btn-success custom-button" data-bs-toggle="modal" data-bs-target="#exampleModal">Kembalikan Buku</button>
+            {% endif %}
+            {% if user.role == 'A' %}
+                <a href="{% url 'bacaditempat:edit_venue' venue.pk %}">
+                    <button class="custom-button">
+                        Edit
+                      </button>
+                </a>
+                <a href="{% url 'bacaditempat:delete_venue' venue.pk %}" class="btn btn-danger custom-button ml-2">
+                    <i class="bi bi-trash3-fill"></i> Hapus
+                </a>
+            {% endif %}
+        </div>
+    </div>
+    
+<h1 id="daftar-buku">Daftar Buku Available</h1>
+<div class="card-container">
+    {% for book in books %}
+    <div class="card text-white" style="width: 250px; height: 450px;">
+        <div style="text-align: center;">
+            <img class="card-img-top" src="{{book.thumbnail}}" alt="Card image cap" style="max-width: 200px; max-height: 250px; border-radius: 0;">
+        </div>
+        <div class="card-body">
+            <div>
+                <h5 class="card-title" style="font-size: 15px; color: black;">{{ book.title }}</h5>
+                <p class="card-text" style="font-size: 15px; color: black;">Author: {{ book.display_authors }}</p>
+            </div>
+            <div style="display: flex; flex: row;">
+                <a href="{% url 'bacaditempat:rent_book' book.pk %}" class="btn btn-primary btn1">
+                    Pinjam
+                </a>
+                <div style="width: 10px;"></div>
+                <a href="#" class="btn btn-primary">Lihat Detail</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Booking Venue</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="" method="POST" enctype="multipart/form-data" id="form" onsubmit="return false;">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="person_name" class="col-form-label">Name:</label>
+                        <input type="text" class="form-control" id="person_name" name="person_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone_number" class="col-form-label">Phone Number:</label>
+                        <input type="number" class="form-control" id="phone_number" name="phone_number" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="rentable" class="col-form-label">Date Use:</label>
+                        <input type="date" class="form-control" id="rentable" name="rentable" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="returnable" class="col-form-label">Date Return:</label>
+                        <input type="date" class="form-control" id="returnable" name="returnable" required>
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="button_add" data-bs-dismiss="modal">Pinjam</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<h1 id="daftar-buku">Daftar Buku Rented</h1>
+<div class="card-container">
+    {% for book in book_rented %}
+    <div class="card text-white" style="width: 250px; height: 450px;">
+        <div style="text-align: center;">
+            <img class="card-img-top" src="{{book.thumbnail}}" alt="Card image cap" style="max-width: 200px; max-height: 250px; border-radius: 0;">
+        </div>
+        <div class="card-body">
+            <div>
+                <h5 class="card-title" style="font-size: 15px; color: black;">{{ book.title }}</h5>
+                <p class="card-text" style="font-size: 15px; color: black;">Author: {{ book.display_authors }}</p>
+            </div>
+            <div style="display: flex; flex: row;">
+                {% if book.user == user %}
+                <a href="{% url 'bacaditempat:return_book' book.bookID %}" class="btn btn-primary btn1">
+                    Kembalikan
+                </a>
+                {% else %}
+                <a disabled href="{% url 'bacaditempat:return_book' book.bookID %}" class="btn btn-primary btn1">
+                    Kembalikan
+                </a>
+                {% endif %}
+                <div style="width: 10px;"></div>
+                <a href="#" class="btn btn-primary">Lihat Detail</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="modal fade modal-custom" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Daftar Pinjaman</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {% for book in rented_books %}
+                <div class="card text-white" style="width: 250px; height: 450px;">
+                    <div style="text-align: center;">
+                        <img class="card-img-top" src="{{book.thumbnail}}" alt="Card image cap" style="max-width: 200px; max-height: 250px; border-radius: 0;">
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <h5 class="card-title" style="font-size: 15px; color: black;">{{ book.title }}</h5>
+                            <p class="card-text" style="font-size: 15px; color: black;">Author: {{ book.display_authors }}</p>
+                        </div>
+                        <div style="display: flex; flex: row;">
+                            <div style="width: 10px;"></div>
+                            <a href="{% url 'bacaditempat:return_book' book.pk %}">
+                                <button type="button" class="btn btn-primary btn-sm">Kembalikan</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function getProducts() {
+        
+        return fetch("{% url 'bacaditempat:get_venue_json' %}").then((res) => res.json())
+    }
+
+    async function renderBook() {
+        let venue = await getProducts();
+        document.getElementByClassName("card-container").innerHTML = ""
+        let htmlContent = '';
+        let userRole = "{% if user.role %}{{ user.role }}{% endif %}";
+
+        venue.forEach(venue => {
+            htmlContent += `
+                <div class="card-cont">
+                    <div style="display: flex; justify-content: center; flex-direction: column; width: 50%;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
+                            <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+                        </svg>
+                        <div>${venue.fields.name}</div>
+                    </div>
+                    <div style="width: 30px;"></div>
+                    <div style="display: flex; justify-content: space-around; flex-direction: column; width: 50%;">
+                        Alamat
+                        <div>${venue.fields.address}</div>
+                        <a href="/bacaditempat/detail/${venue.pk}" class="btn btn-primary">Lihat Detail</a>
+                    </div>
+            `;
+            if (userRole === 'A') {
+            htmlContent += `
+                <div style="display: flex; flex-direction: row;">
+                    <a href="/bacaditempat/edit_venue/${venue.pk}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                        </svg>
+                    </a>
+                    <div style="width: 10px;"></div>
+                    <a href="/bacaditempat/delete_venue/${venue.pk}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                            <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"/>
+                        </svg>
+                    </a>
+                </div>
+            `;
+        }
+        htmlContent += `</div>`;
+        });
+
+        document.getElementByClassName('card-container').innerHTML = htmlContent;
+    }
+
+    renderBook()
+
+    {% comment %} function rentBook() {
+        fetch("{% url 'bacaditempat:pesan_buku_ajax' %}", {
+            method: "POST",
+            body: new FormData(document.querySelector('#form'))
+        }).then(renderBook)
+
+        document.getElementById("form").reset()
+        return false
+    } {% endcomment %}
+
+    {% comment %} document.getElementById("button_add").onclick = rentBook {% endcomment %}
+</script>
+    
+
+
+
+{% endblock content %}
+

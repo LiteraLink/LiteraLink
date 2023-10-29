@@ -8,4 +8,5 @@ urlpatterns = [
     path('fetch_api_data/', views.seeding_data, name='fetch_api_data'),
     path('show_json/', views.show_json, name='show_json'),
     path('flush/', views.flush, name='flush'),
+    path('show-detail-books/<int:id>', views.show_detail_books, name='show_detail_books')
 ]

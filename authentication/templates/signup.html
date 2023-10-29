@@ -5,22 +5,141 @@
 {% endblock meta %}
 
 {% block content %}  
+<style>
+    body {
+      font-family: 'Sora', sans-serif;
+      background-color: #126164;
+      color: #fff;
+    }
+  
+    .hero {
+      padding-top: 20px;
+      padding-bottom: 200px; 
+  
+    }
+  
+    .persegi-panjang {
+      height: 10px; /* Tinggi elemen */
+      width: 100px;
+      margin-top: 10px;
+      background-color: #FFFF; /* Warna latar belakang, ganti dengan warna yang Anda inginkan */
+      }
+  
+    .container-bg{
+      max-width: 960px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+  
+    .custom-bg {
+      background-color: #CEDD00; 
+      color: #0B7377; 
+    }
+  
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+      grid-gap: 8px;
+      padding: 100px;
+    }
+  
+    .card {
+      background-color: #FFF;
+      color: #0B7377;
+      border-radius: 20px;
+      padding: 0px 5px;
+      margin-bottom: 20px;
+    }
+  
+    .card-body {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+  
+    .custom-h4 {
+      font-family: 'Manrope', sans-serif;
+      max-width: 600px;
+      text-align: center;
+      margin: 0 auto;
+      line-height: 1.4; 
+      font-size: 18px;
+    }
+  
+    .custom-button {
+      background-color: #CEDD00; 
+      color: #0B7377; 
+      padding: 10px 20px; 
+      margin-top: 20px; 
+      border: none; 
+      border-radius: 20px; 
+      font-family: 'Sora', sans-serif;
+      font-weight: 600;
+    }
+  
+    .update-button {
+      background-color: #CEDD00; 
+      color: #0B7377; 
+      padding: 10px 20px; 
+      border: none; 
+      border-radius: 20px; 
+      font-family: 'Sora', sans-serif;
+      font-weight: 600;
+    }
+  
+    .container {
+      display: flex;
+      justify-content: center; 
+      align-items: center; 
+    }
+  
+    .bentuk {
+      width: auto; /* Lebar container */
+      height: auto;
+      padding: 20px;
+      background-color: #0B7377;; /* Warna latar belakang putih */
+      border-radius: 20px
+    }
 
+    .containers {
+        display: flex;
+        justify-content: center; /* Untuk mengatur elemen-elemen ke tengah horizontal */
+        align-items: center; /* Untuk mengatur elemen-elemen ke tengah vertikal */
+        height: 150vh; /* Ini agar elemen-elemen berada di tengah halaman sesuai tinggi tampilan layar */
+    }
+
+  .login {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px;
+    }
+
+    .input-field {
+    margin: 10px 0; /* Atur jarak atas dan bawah sesuai kebutuhan */    
+    }   
+</style>
+
+<div class="containers">
+<div class="container">
+<div class="bentuk">
 <div class = "login">
     
-    <h1>Sign Up</h1>  
-
+    <h3 style="font-weight: 700; text-align: center; font-size: 24px;">Sign Up To LiteraLink</h3>  
+    <div class="container">
+        <div class="persegi-panjang"></div>
+    </div>
+    <br>
+    <br>
         <form method="POST" >  
             {% csrf_token %}  
-            <table>  
-                {{ form.as_table }}  
-                <tr>  
-                    <td></td>
-                    <td><input type="submit" name="submit" value="Daftar"/></td>  
-                </tr>  
-            </table>  
+            {{ form.as_p }}
+            <div class="container"><input class="custom-button" type="submit" name="submit" value="Daftar"/></div>
         </form>
-
+    <br>
     {% if messages %}  
         <ul>   
             {% for message in messages %}  
@@ -30,7 +149,9 @@
     {% endif %}
 
 </div>
-
-Already have an account? <a href="{% url 'auth:signin' %}">Sign In Now</a>
+<div class="container" style="font-size: 14px;"> have an account? <a href="{% url 'auth:signin' %}">Sign In Now</a></div>
+</div>
+</div>
+</div>
 
 {% endblock content %}

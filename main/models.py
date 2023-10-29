@@ -8,4 +8,3 @@ class Book(models.Model):
     description = models.TextField()
     categories = models.CharField(max_length = 255)
     thumbnail = models.TextField()
-
