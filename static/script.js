@@ -52,7 +52,7 @@ async function renderStation() {
 renderStation()
 
 function addStation() {
-    fetch("/dimanasajakapansaja/add_station_ajax/", {
+    fetch("/dimanasajakapansaja/add-station-ajax/", {
         method: "POST",
         body: new FormData(document.querySelector('#form'))
     }).then(renderStation)
