@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'BacaDiTempat',
     'Bibliofilia',
     'DimanaSajaKapanSaja',
-    'ckeditor'
 ]
 
 MIDDLEWARE = [
