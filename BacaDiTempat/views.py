@@ -7,19 +7,43 @@ from django.urls import reverse
 from BacaDiTempat.models import Venue, BookVenue
 from BacaDiTempat.forms import VenueForm
 from main.models import Book
-from authentication.models import UserProfile, UserBook
+from authentication.models import UserProfile
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 from random import sample
+from django.template.loader import render_to_string
 
 @login_required(login_url='auth:signin')
 def show_list_venue(request):
-    venue = Venue.objects.all()
+    venue = Venue.objects.all()[:1]
+    total_venue = Venue.objects.count()
     
-    context = {"venues": venue}
+    is_admin = False
+    user = UserProfile.objects.get(user=request.user)
+    if(user.role == 'A'):
+        is_admin = True
+    
+    context = {"venues": venue,
+               "total_venue": total_venue,
+               "load_button": True,
+               "is_admin": is_admin}
     response = render(request, "bacaditempat_main.html", context)
 
     return response
+
+def show_detail_books(request, id=None):
+    books = Book.objects.get(pk=id)
+
+    context= {
+        'bookID':books.bookID,
+        'title' :books.title,
+        'authors' : books.authors,
+        'display_authors' : books.display_authors,
+        'description' : books.description,
+        'categories' : books.categories,
+        'thumbnail' : books.thumbnail
+    }
+    return render(request,'book_details.html',context)
 
 def show_detail_venue(request, venue_id):
     venue = Venue.objects.get(id=venue_id)
@@ -295,4 +319,23 @@ def pesan_buku_ajax(request, book_id):
     # Jika request bukan POST (misalnya GET), Anda dapat mengembalikan respons lain atau mengarahkan ke halaman lain.
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
+@csrf_exempt
+def load_more_venue(request):
+    if is_ajax(request):
+        offset = int(request.GET['offset'])
+        limit = int(request.GET['limit'])
+        venues = Venue.objects.all()[offset:offset+limit]
+        data = render_to_string(
+            'ajax/list-venue.html',
+            {'venues': venues}
+        )
+        return JsonResponse({'data': data})
 
+def is_ajax(request):
+    """
+    https://stackoverflow.com/questions/63629935
+    """
+    return (
+        request.headers.get('x-requested-with') == 'XMLHttpRequest'
+        or request.accepts("application/json")
+    )

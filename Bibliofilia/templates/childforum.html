@@ -1,33 +1,36 @@
 {% extends 'base.html' %} 
+
+
+
 {% block content %}
-    
+
 <head>
     {% load static %}
     <title>Bibliofilia</title>
-    <style>
-        .wider-modal {
-            max-width: 800px; /* Adjust the width as needed */
-        }
-        /* */
-    </style>
+    <link rel="stylesheet" href="{% static 'css/childForum.css' %}" defer>
 </head>
 <body>
-    <nav class = wrap>
-        <div class = brand>
-            <h3>Welcome to Bibliofilia</h3> 
-            <h5> {{ forum_title }} </h5>
-            <h5> {{ forum_head_msg|safe }} </h5>
-            <h5> {{ forum_id }} </h5>
-        </div>
-    </nav>
+    <div class="container-button" style="text-align: center;">
+        <nav class = wrap>
+            <div class = brand>
+                <br>
+                <b style="font-size: 32px;"> {{ forum_title }} </b>
+                <div class="container-button">
+                    <div class="persegi-panjang"></div>
+                </div> 
+                <br>
+                <h5> {{ forum_head_msg|safe }} </h5>
+            </div>
+        </nav>
+    </div>
 
     <div class="content">
-        <div class="row" id="list_of_replies">
+        <div class="row" id="list_of_replies" style="align-items: center; justify-content: center; padding: 40px;">
             <!-- Replies will be displayed here as cards -->
         </div>
  
         <div class="modal fade" id="staticBackdrop" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog wider-modal"">
+            <div class="modal-dialog wider-modal">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="staticBackdropLabel">Add New Item</h1>
@@ -49,8 +52,8 @@
                 </div>
             </div>
         </div>
-        <div class="AddItem-button-container">
-            <button type="button" class="Add-button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Replies</button>
+        <div class="AddItem-button-container container-button">
+            <button type="button" class="btn Add-button" style="background-color: #CEDD00;color: #0B7377;" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Replies</button>
         </div> 
         <h4 id="itemCount"></h4>
         <br />

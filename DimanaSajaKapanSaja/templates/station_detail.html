@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block meta %}
-<link rel="stylesheet" href="{% static 'detail.css' %}">
+<link rel="stylesheet" href="{% static 'css/detail.css' %}">
 {% endblock meta %}
 
 {% block content %}
@@ -47,6 +47,7 @@
                 </div>
                 <div class="icon" style="background-color: orangered;">Returnable {{ station.returnable }}</div>
             </div>
+            {% if user.role == 'M' %}
             <div class="icons">
                 <a href="#daftar-buku">
                     <button type="button" class="btn btn-primary btn-sm">Lihat Buku</button>
@@ -58,6 +59,7 @@
                     <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Kembalikan Buku</button>
                 {% endif %}
             </div>
+            {% endif %}
         </div>
         <div>
             {% if user.role == 'A' %}
@@ -98,17 +100,19 @@
             <div style="text-align: center;">
                 <img class="card-img-top" src="{{book.thumbnail}}" alt="Card image cap" style="max-width: 200px; max-height: 250px; border-radius: 0;">
             </div>
-            <div class="card-body">
+            <div class="card-body" style="align-items: center;">
                 <div>
                     <h5 class="card-title" style="font-size: 15px; color: black;">{{ book.title }}</h5>
                     <p class="card-text" style="font-size: 15px; color: black;">Author: {{ book.display_authors }}</p>
                 </div>
                 <div style="display: flex; flex: row;">
+                    {% if user.role == 'M' %}
                     <a href="{% url 'dimanasajakapansaja:rent_book' book.pk %}" class="custom-button">
                         Pinjam
                     </a>
+                    {% endif %}
                     <div style="width: 5px;"></div>
-                    <a href="#" class="custom-button" style="background-color: #0D63FD; color: white;">Lihat Detail</a>
+                    <a href="{% url 'dimanasajakapansaja:show_detail_books' book.title %}" class="custom-button" style="background-color: #0D63FD; color: white;">Lihat Detail</a>
                 </div>
             </div>
         </div>

@@ -1,5 +1,9 @@
 # LiteraLink 
 
+## Pipeline Status
+[![Release](https://github.com/LiteraLink/LiteraLink/actions/workflows/pbp-deploy.yml/badge.svg)](https://github.com/LiteraLink/LiteraLink/actions/workflows/pbp-deploy.yml)
+
+
 ## Kelompok 03 👨‍💻
 - [Martin Marcelino Tarigan](https://github.com/MartinTarigan) (2206029645)
 - [Georgina Elena Shinta Dewi Achti](https://github.com/georginaelena) (2206810995)
@@ -18,7 +22,7 @@
 ![Python](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue)
 
 ### Tautan 🔗
-TBA
+[LiteraLink](literalink-e03-tk.pbp.cs.ui.ac.id)
 
 ## Cerita dan Manfaat Aplikasi 📙
 Di Indonesia, masalah rendahnya tingkat literasi telah menjadi perhatian yang mendalam. Faktor-faktor seperti keterbatasan akses ke toko buku, kurangnya minat membaca, dan bahkan keterbatasan waktu untuk pergi ke perpustakaan telah menjadi hambatan yang signifikan. Terlebih lagi, gaya hidup yang sibuk membuat banyak orang enggan untuk menghabiskan waktu berjam-jam di toko buku atau perpustakaan tradisional. Melihat kesuksesan dan inovasi yang dihadirkan oleh startup seperti Gojek, yang telah merubah cara orang memandang transportasi dan pengantaran makanan, tim kami terinspirasi untuk menghadirkan solusi serupa dalam dunia literasi. Oleh karena itu, kami memulai proyek yang bernama LiteraLink dengan fitur-fitur inovatif yang terinspirasi dari Gojek, dengan harapan dapat menghadirkan perubahan positif dalam cara orang mengakses dan berinteraksi dengan buku, serta mendorong budaya literasi yang lebih kuat di seluruh Indonesia.
