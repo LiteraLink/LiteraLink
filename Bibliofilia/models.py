@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
-from ckeditor.fields import RichTextField
 
 # Create your models here.
 class Forum (models.Model):
@@ -10,7 +9,7 @@ class Forum (models.Model):
     BookName = models.CharField(max_length=255)
     forumsDescription = models.CharField(max_length=255)
     bookPicture = models.ImageField(upload_to='reviewimages/')
-    userReview = RichTextField(blank=True, null=True)
+    userReview = models.TextField(blank=True, null=True)
     repliesTotal = models.IntegerField()
     dateOfPosting = models.DateField(auto_now_add=True)
     username = models.CharField(max_length=255)
@@ -22,7 +21,7 @@ class ForumReply(models.Model):
     forum = models.ForeignKey(Forum, on_delete=models.CASCADE, related_name='replies')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     username = models.CharField(max_length=255)
-    text = RichTextField(blank=True, null=True)
+    text = models.TextField(blank=True, null=True)
     pictureReplies = models.ImageField(upload_to='reviewimages/')
     timestamp = models.DateField(auto_now_add=True)
 
