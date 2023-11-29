@@ -13,11 +13,7 @@ urlpatterns = [
     path('rent_book/<int:book_id>/', views.rent_book, name='rent_book'),
     path('return_book/<int:station_id>/<int:book_id>/', views.return_book, name='return_book'),
     path('get-station/', views.get_station_json, name='get_station_json'),
-<<<<<<< HEAD
     path('add-station-ajax/', views.add_station_ajax, name='add_station_ajax'),
     path('search/<int:station_id>/', views.get_category, name='search'),
     path('show-detail-book/<str:book_title>/', views.show_detail_book, name='show_detail_books'),
-=======
-    path('add-station-ajax/', views.add_station_ajax, name='add_station_ajax')
->>>>>>> 5c58a0ed9bf06d6d9c6099bf284b8ffca75802b2
 ]
