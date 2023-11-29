@@ -10,7 +10,6 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
 
-<<<<<<< HEAD
 def create_station_book(station, book):
     return StationBook(
         station=station,
@@ -23,8 +22,6 @@ def create_station_book(station, book):
         thumbnail=book.thumbnail,
     )
 
-=======
->>>>>>> 5c58a0ed9bf06d6d9c6099bf284b8ffca75802b2
 
 @login_required(login_url='auth:signin')
 def show_station(request):
@@ -40,7 +37,6 @@ def show_station(request):
 
     return response
 
-<<<<<<< HEAD
 @login_required(login_url='auth:signin')
 def show_station_detail(request, station_id, QUERY=None):
     category_set = set()
@@ -65,11 +61,6 @@ def show_station_detail(request, station_id, QUERY=None):
     else:
         station_book = StationBook.objects.filter(station=station_id).filter(categories=QUERY)
 
-=======
-def show_station_detail(request, station_id):
-    station = Station.objects.get(id=station_id)
-    station_book = StationBook.objects.filter(station=station_id)
->>>>>>> 5c58a0ed9bf06d6d9c6099bf284b8ffca75802b2
     member = UserProfile.objects.get(user=request.user)
     rented_book = UserBook.objects.filter(feature="DSKS").filter(user=member)
 
@@ -78,19 +69,13 @@ def show_station_detail(request, station_id):
         "user": member,
         "books": station_book,
         "rented_books": rented_book,
-<<<<<<< HEAD
         "categories": category_list
-=======
->>>>>>> 5c58a0ed9bf06d6d9c6099bf284b8ffca75802b2
     }
     response = render(request, "station_detail.html", context)
 
     return response
 
-<<<<<<< HEAD
 @login_required(login_url='auth:signin')
-=======
->>>>>>> 5c58a0ed9bf06d6d9c6099bf284b8ffca75802b2
 @csrf_exempt
 def add_station_ajax(request):
     station_id = 0
@@ -116,41 +101,22 @@ def add_station_ajax(request):
         books = sample(list(Book.objects.all()), amount)
 
         for book in books:
-<<<<<<< HEAD
             station_book = create_station_book(station, book)
-=======
-            station_book = StationBook(
-                station=station,
-                bookID=book.bookID,
-                title=book.title,
-                authors=book.authors,
-                display_authors=book.display_authors,
-                description=book.description,
-                categories=book.categories,
-                thumbnail=book.thumbnail,
-            )
->>>>>>> 5c58a0ed9bf06d6d9c6099bf284b8ffca75802b2
             station_book.save()
 
         return HttpResponse(b"CREATED", status=201)
 
     return HttpResponseNotFound()
 
-<<<<<<< HEAD
 @login_required(login_url='auth:signin')
 @csrf_exempt
-=======
->>>>>>> 5c58a0ed9bf06d6d9c6099bf284b8ffca75802b2
 def get_station_json(request):
     station = Station.objects.all()
     response = HttpResponse(serializers.serialize('json', station))
     return response
     
-<<<<<<< HEAD
 @login_required(login_url='auth:signin')
 @csrf_exempt
-=======
->>>>>>> 5c58a0ed9bf06d6d9c6099bf284b8ffca75802b2
 def add_station(request):
     user = UserProfile.objects.get(user=request.user)
     if(user.role != 'A'):
@@ -170,20 +136,7 @@ def add_station(request):
         books = sample(list(Book.objects.all()), amount)
 
         for book in books:
-<<<<<<< HEAD
             station_book = create_station_book(station, book)
-=======
-            station_book = StationBook(
-                station=station,
-                bookID=book.bookID,
-                title=book.title,
-                authors=book.authors,
-                display_authors=book.display_authors,
-                description=book.description,
-                categories=book.categories,
-                thumbnail=book.thumbnail,
-            )
->>>>>>> 5c58a0ed9bf06d6d9c6099bf284b8ffca75802b2
             station_book.save()
 
         return HttpResponseRedirect(reverse('dimanasajakapansaja:show_station'))
@@ -240,20 +193,10 @@ def del_station(request, station_id):
     response = redirect('dimanasajakapansaja:show_station')
     return response
 
-<<<<<<< HEAD
 @login_required(login_url='auth:signin')
 @csrf_exempt
 def rent_book(request, book_id):
     user = UserProfile.objects.get(user=request.user)
-=======
-def rent_book(request, book_id):
-    user = UserProfile.objects.get(user=request.user)
-
-    if(user.role != 'M'):
-        response = HttpResponseForbidden("Access Denied")
-        return response
-      
->>>>>>> 5c58a0ed9bf06d6d9c6099bf284b8ffca75802b2
     book = StationBook.objects.get(id=book_id)
     station_id = book.station.pk
     station = Station.objects.get(id=station_id)
@@ -279,11 +222,8 @@ def rent_book(request, book_id):
     response = HttpResponseRedirect(reverse("dimanasajakapansaja:detail", args=[station_id]))
     return response
 
-<<<<<<< HEAD
 @login_required(login_url='auth:signin')
 @csrf_exempt
-=======
->>>>>>> 5c58a0ed9bf06d6d9c6099bf284b8ffca75802b2
 def return_book(request, station_id ,book_id):
     user = UserProfile.objects.get(user=request.user)
     if(user.role != 'M'):
@@ -292,20 +232,7 @@ def return_book(request, station_id ,book_id):
     
     book = UserBook.objects.get(id=book_id)
     station = Station.objects.get(id=station_id)
-<<<<<<< HEAD
     returned_book = create_station_book(station, book)
-=======
-    returned_book = StationBook(
-        station=station,
-        bookID=book.bookID,
-        title=book.title, 
-        authors=book.authors, 
-        display_authors=book.display_authors, 
-        description=book.description, 
-        categories=book.categories, 
-        thumbnail=book.thumbnail, 
-    )
->>>>>>> 5c58a0ed9bf06d6d9c6099bf284b8ffca75802b2
 
     station.rentable+=1
     station.returnable-=1
@@ -317,7 +244,6 @@ def return_book(request, station_id ,book_id):
     response = HttpResponseRedirect(reverse("dimanasajakapansaja:detail", args=[station_id]))
     return response
 
-<<<<<<< HEAD
 @login_required(login_url='auth:signin')
 @csrf_exempt
 def get_category(request, station_id):
@@ -340,17 +266,10 @@ def show_detail_book(request, book_title):
     }
     return render(request,'detailBooks.html',context)
 
-=======
->>>>>>> 5c58a0ed9bf06d6d9c6099bf284b8ffca75802b2
 def flush(request):
     books = StationBook.objects.all()
     books.delete()
 
     response = HttpResponse("flushhhh")
     return response
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 5c58a0ed9bf06d6d9c6099bf284b8ffca75802b2
 
