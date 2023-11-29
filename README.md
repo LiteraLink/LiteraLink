@@ -56,7 +56,7 @@ Dengan semua manfaat ini, LiteraLink dapat menjadi alat yang efektif dalam memer
 1.  <b>Antar ([Yeala](https://github.com/VirgilliaYeala))</b><br/>
     Pada halaman ini, pengguna dapat membuat pesanan untuk mengantarkan buku ke alamat yang ingin di tuju. Pengguna dpat melihat status pesanan, termasuk buku yang telah dipesan dan perkiraan waktu pengiriman.Tidak hanya itu, pengguna dapat mengubah atau memperbarui pesanan dan membatalkan pesanan jika mereka tidak ingin menerima buku tersebut lagi.
 2.  <b>BacaDiTempat ([Elena](https://github.com/georginaelena))</b><br/>
-    Pada halaman ini, pengguna dapat melihat rekomendasi venue yang bekerja sama dengan LiteraLink, seperti coffee shop dan perpustakaan. Pengguna dapat melihat ketersediaan buku pada venue tersebut. Jika pengguna tertarik, pengguna dapat melakukan booking venue.
+    Pada halaman ini, pengguna dapat melihat rekomendasi venue yang bekerja sama dengan LiteraLink, seperti coffee shop dan perpustakaan. Pengguna dapat melihat ketersediaan buku pada venue tersebut. Jika pengguna tertarik, pengguna dapat melakukan booking buku pada venue tersebut.
 3.  <b>DimanaSajaKapanSaja ([Martin](https://github.com/MartinTarigan))</b><br/>
     Pada halaman ini, pengguna dapat melihat lokasi station (vending machine) yang tersebar di tempat umum, seperti stasiun transportasi umum, mall, taman kotam dan lain sebagainya yang terdaftar di dalam sistem. Pengguna dapat meminjam buku dengan mendapatkan scan QR code yang diberikan dalam aplikasi dan kemudian pengguna dapat melakukan scan di station manapun. Pengguna juga dapat mengembalikan buku di staion manapun.
 4.  <b>Bibliofilia ([Pendar](https://github.com/Pebintk))</b><br/>
