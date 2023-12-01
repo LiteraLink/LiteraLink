@@ -1,0 +1,78 @@
+{% extends 'base.html' %} 
+{% block content %}
+
+<head>
+    {% load static %} 
+    <!-- <script src="../static/mainForum.js" defer></script>   -->
+    <script src="{% static 'js/mainForum.js' %}" defer></script>
+    <script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}" defer></script>
+    <link rel="stylesheet" href="{% static 'css/mainForum.css' %}" defer>
+    <title>Bibliofilia</title>
+</head>
+<body>
+    <div class="content">
+        <div id="userRole" data-role="{% if member.role %}{{ member.role }}{% endif %}"></div>
+        <div class="hero" style="background-image: url('../static/img/Group7.png');" >
+            <br>
+            <div class="container-bg" style="padding-top:150px ;">
+                <br>
+                <br>
+                <h2 style="color: #fff;font-weight: 600; text-align: center;">Bibliofilia</h2>
+                <h4 class="custom-h4"> Forum diskusi untuk para penggemar buku</h4>
+            </div>
+            <br>
+            <div class="container-button">
+                <button type="button" style="color: #126164;;"class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Create New Forum</button>
+            </div>
+        </div>
+        <div class="container my-4">
+            <div class="forumHead container-button" id="forumHead"></div>
+            <div class="container-button">
+            <div class="persegi-panjang"></div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-12">
+                    <table class="table table-hover p-5 " id="list_of_forms"></table>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="staticBackdrop" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog wider-modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Add New Forum</h1>
+                        <button type="button" id="btnModal" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="form" onsubmit="return false;">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="BookName" class="col-form-label">Forum Topic:</label>
+                                <input type="text" class="form-control" id="BookName" name="BookName"></input>
+                            </div>
+                            <div class="mb-3">
+                                <label for="forumsDescription" class="col-form-label">Description:</label>
+                                <textarea class="form-control" id="forumsDescription" name="forumsDescription"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="userReview" class="col-form-label">Message:</label>
+                                <textarea class="form-control" id="userReview" name="userReview"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="button_add" data-bs-dismiss="modal">Add Forum</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+    </div>
+
+
+</body>
+<!-- <h1>Welcome to Bibliofilia</h1> -->
+
+{% endblock %}

@@ -24,7 +24,7 @@ urlpatterns = [
     path('', include('main.urls')),
     path('dimanasajakapansaja/', include('DimanaSajaKapanSaja.urls')),
     path('antar/', include('Antar.urls')),
-    # path('bibliofilia/', include('Bibliofilia.urls')),
-    # path('bacaditempat/', include('BacaDiTempat.urls')),
+    path('bibliofilia/', include('Bibliofilia.urls')),
+    path('bacaditempat/', include('BacaDiTempat.urls')),
     path('auth/', include('authentication.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

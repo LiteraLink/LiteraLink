@@ -1,5 +1,9 @@
 # LiteraLink 
 
+## Pipeline Status
+[![Release](https://github.com/LiteraLink/LiteraLink/actions/workflows/pbp-deploy.yml/badge.svg)](https://github.com/LiteraLink/LiteraLink/actions/workflows/pbp-deploy.yml)
+
+
 ## Kelompok 03 👨‍💻
 - [Martin Marcelino Tarigan](https://github.com/MartinTarigan) (2206029645)
 - [Georgina Elena Shinta Dewi Achti](https://github.com/georginaelena) (2206810995)
@@ -18,7 +22,7 @@
 ![Python](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue)
 
 ### Tautan 🔗
-TBA
+[LiteraLink](http://literalink-e03-tk.pbp.cs.ui.ac.id/)
 
 ## Cerita dan Manfaat Aplikasi 📙
 Di Indonesia, masalah rendahnya tingkat literasi telah menjadi perhatian yang mendalam. Faktor-faktor seperti keterbatasan akses ke toko buku, kurangnya minat membaca, dan bahkan keterbatasan waktu untuk pergi ke perpustakaan telah menjadi hambatan yang signifikan. Terlebih lagi, gaya hidup yang sibuk membuat banyak orang enggan untuk menghabiskan waktu berjam-jam di toko buku atau perpustakaan tradisional. Melihat kesuksesan dan inovasi yang dihadirkan oleh startup seperti Gojek, yang telah merubah cara orang memandang transportasi dan pengantaran makanan, tim kami terinspirasi untuk menghadirkan solusi serupa dalam dunia literasi. Oleh karena itu, kami memulai proyek yang bernama LiteraLink dengan fitur-fitur inovatif yang terinspirasi dari Gojek, dengan harapan dapat menghadirkan perubahan positif dalam cara orang mengakses dan berinteraksi dengan buku, serta mendorong budaya literasi yang lebih kuat di seluruh Indonesia.
@@ -52,7 +56,7 @@ Dengan semua manfaat ini, LiteraLink dapat menjadi alat yang efektif dalam memer
 1.  <b>Antar ([Yeala](https://github.com/VirgilliaYeala))</b><br/>
     Pada halaman ini, pengguna dapat membuat pesanan untuk mengantarkan buku ke alamat yang ingin di tuju. Pengguna dpat melihat status pesanan, termasuk buku yang telah dipesan dan perkiraan waktu pengiriman.Tidak hanya itu, pengguna dapat mengubah atau memperbarui pesanan dan membatalkan pesanan jika mereka tidak ingin menerima buku tersebut lagi.
 2.  <b>BacaDiTempat ([Elena](https://github.com/georginaelena))</b><br/>
-    Pada halaman ini, pengguna dapat melihat rekomendasi venue yang bekerja sama dengan LiteraLink, seperti coffee shop dan perpustakaan. Pengguna dapat melihat ketersediaan buku pada venue tersebut. Jika pengguna tertarik, pengguna dapat melakukan booking venue.
+    Pada halaman ini, pengguna dapat melihat rekomendasi venue yang bekerja sama dengan LiteraLink, seperti coffee shop dan perpustakaan. Pengguna dapat melihat ketersediaan buku pada venue tersebut. Jika pengguna tertarik, pengguna dapat melakukan booking buku pada venue tersebut.
 3.  <b>DimanaSajaKapanSaja ([Martin](https://github.com/MartinTarigan))</b><br/>
     Pada halaman ini, pengguna dapat melihat lokasi station (vending machine) yang tersebar di tempat umum, seperti stasiun transportasi umum, mall, taman kotam dan lain sebagainya yang terdaftar di dalam sistem. Pengguna dapat meminjam buku dengan mendapatkan scan QR code yang diberikan dalam aplikasi dan kemudian pengguna dapat melakukan scan di station manapun. Pengguna juga dapat mengembalikan buku di staion manapun.
 4.  <b>Bibliofilia ([Pendar](https://github.com/Pebintk))</b><br/>

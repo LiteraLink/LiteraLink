@@ -1,211 +1,32 @@
 {% extends 'base.html' %}
-{% block content %}
 {% load static %}
 
-<style>
-  body {
-    font-family: 'Sora', sans-serif;
-    background-color: #126164;
-    color: #fff;
-  }
+{% block meta %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+<script type="text/javascript" src="{% static 'js/checkout.js' %}" defer></script>
+{% endblock meta %}
 
-  .hero {
-    padding-top: 20px;
-    padding-bottom: 200px; 
-
-  }
-
-  .persegi-panjang {
-    height: 10px; /* Tinggi elemen */
-    width: 100px;
-    margin-top: 10px;
-    background-color: #FFFF; /* Warna latar belakang, ganti dengan warna yang Anda inginkan */
-    }
-
-  .container-bg{
-    max-width: 960px;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-
-  .custom-bg {
-    background-color: #CEDD00; 
-    color: #0B7377; 
-  }
-
-  .card-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    grid-gap: 5px;
-  }
-
-  .card {
-    background-color: #FFF;
-    color: #0B7377;
-    border-radius: 20px;
-    padding: 0px 5px;
-    margin-bottom: 20px;
-  }
-
-  .card-body {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-
-  .custom-h4 {
-    font-family: 'Manrope', sans-serif;
-    max-width: 600px;
-    text-align: center;
-    margin: 0 auto;
-    line-height: 1.4; 
-    font-size: 18px;
-  }
-
-  .custom-button {
-    background-color: #CEDD00; 
-    color: #0B7377; 
-    padding: 10px 20px; 
-    margin-top: 20px; 
-    border: none; 
-    border-radius: 20px; 
-    font-family: 'Sora', sans-serif;
-    font-weight: 600;
-  }
-
-  .container {
-    display: flex;
-    justify-content: center; 
-    align-items: center; 
-  }
-</style>
-
-<nav class="navbar navbar-expand-lg navbar-light shadow custom-bg" style="background-color: #0B7377;" >
-    <div class="container-fluid">
-        <a class="navbar-brand text-white" href="#">LiteraLink</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav ms-auto">
-        <a class="nav-link active text-white" aria-current="page" href="#">Antar</a>
-        <a class="nav-link text-white" href="#">BacaDiTempat</a>
-        <a class="nav-link text-white" href="#">DimanaSajaKapanSaja</a>
-        <a class="nav-link disabled text-white" aria-disabled="true">Bibliofilia</a>
-    </div>
-</div>
-</div>
-</nav>
-<br>
-<div class="container">
+{% block content %}
+<body style="color: white;background-color: #126164;">
+  <br>
+  <div class="container">
     <h3 style="font-weight: 700; text-align: center;">
       Daftar Checkout Pengantaran Buku
     </h3>
   </div>
   <div class="container">
     <div class="persegi-panjang"></div>
-</div>
-<br>
-<div class="container">
-    <div class="card">
-        <h5 class="card-header">{{status_pesanan}}</h5>
-        <div class="card-body">
-          <h5 class="card-title">{{nama_lengkap}}</h5>
-          <p class="card-text">memesan buku {{nama_buku_dipesan}} dengan jumlah {{jumlah_buku_dipesan}}</p>
-          <a href="#" class="btn btn-primary"></a>
-        </div>
-      </div>
-</div>
-
-<script>
-    async function getProducts() {
-        return fetch("{% url 'antar:get_product_json' %}").then((res) => res.json())
-    }
-
-    async function refreshProducts() {
-        document.getElementById("product_table").innerHTML = ""
-        const products = await getProducts()
-        let htmlString = `<tr>
-            <th> 
-                <div class = "custom-header">
-                    Brand
-                </div>
-            </th>
-            <th>
-                <div class = "custom-header">
-                    Name
-                </div>
-            </th>
-            <th>
-                <div class = "custom-header">
-                    Amount
-                </div>
-            </th>
-            <th>
-                <div class = "custom-header">
-                    Description
-                </div>
-            </th>
-            <th>
-                <div class = "custom-header">
-                    Price
-                </div>
-            </th>
-        </tr>`
-
-        products.forEach((item, index, array) => {
-            htmlString += `\n<tr class="${index === array.length - 1 ? 'last-row' : ''}" style="text-align: center;">
-            <td>${item.fields.brand}</td>
-            <td>${item.fields.name}</td>
-            <td>
-                <div class = "container">
-                    <a href="sub_stock/${item.pk}">
-                            <button type="submit" class="update-button">
-                                -
-                            </button>
-                        </a>
-                    <div class="custom-font" style="margin-left: 20px; margin-right: 20px;">
-                            ${item.fields.amount}
-                    </div> 
-                    <a href="add_stock/${item.pk}">
-                            <button type="submit" class="update-button">
-                                +
-                            </button>
-                        </a>
-                </div>
-            </td>
-            <td>${item.fields.description}</td>
-            <td>${item.fields.price}</td>
-            <td> 
-                <button class = delete-button onclick="deleteProduct(${item.pk})">
-                    Delete
-                </button>
-            </td>
-        </tr>` 
-        })
-        
-        document.getElementById("product_table").innerHTML = htmlString
-    }
-
-    async function deleteProduct(id) {
-        const response = await fetch(`/delete_product_ajax/${id}`);
-        refreshProducts();
-    }
-
-    function addProduct() {
-        fetch("/create-ajax/", {
-            method: "POST",
-            body: new FormData(document.querySelector('#form'))
-        }).then(refreshProducts())
-        
-
-        document.getElementById("form").reset()
-        return false
-    }
-    document.getElementById("button_add").onclick = addProduct
-
-    refreshProducts()
-</script>
+  </div>
+  <br>
+  <br>
+  <div class="container">
+    <form class="d-flex" method="GET" action="{% url 'antar:show_list_checkout_filter' %}">
+      <input class="form-control me-2" name="query" type="search" placeholder="Search Nama Buku" aria-label="Search">
+      <button type="submit" class="btn" style="background-color: #CEDD00;color: #0B7377;">Search</button>
+    </form>
+  </div>
+  <br>
+  <div class="card-container" id="personCheckout" data-role="{{ role }}">
+  </div>
+</body>
 {% endblock content %}

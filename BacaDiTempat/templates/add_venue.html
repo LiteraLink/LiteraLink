@@ -1,0 +1,126 @@
+{% extends 'base.html' %} 
+
+{% block content %}
+
+<style>
+    body {
+      font-family: 'Sora', sans-serif;
+      background-color: #126164;
+      color: #fff;
+    }
+  
+    .hero {
+      background-image: url("../static/img/Group7.png");
+      padding-bottom: 260px; /* Sesuaikan dengan kebutuhan Anda */
+      background-size: 100% auto; /* Mengatur lebar gambar maksimum dan tinggi mengikuti aspek asli */
+      background-repeat: no-repeat; /* Mencegah gambar diulang */
+      background-position: center top; 
+      margin-bottom: 20px;
+      margin-top: 50px;
+  
+    }
+  
+    .persegi-panjang {
+      height: 10px; /* Tinggi elemen */
+      width: 100px;
+      margin-top: 10px;
+      background-color: #FFFF; /* Warna latar belakang, ganti dengan warna yang Anda inginkan */
+      }
+  
+    .container-bg{
+      max-width: 960px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+  
+    .custom-bg {
+      background-color: #CEDD00; 
+      color: #0B7377; 
+    }
+  
+    .custom-form-bg {
+      background-color: #FFF;
+      color: #0B7377;
+      justify-content: center;
+      align-items: center;
+      display: flex;
+      border-radius: 20px;
+      padding: 0px 5px;
+      margin-bottom: 20px;
+    }
+
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      grid-gap: 10px;
+    }
+  
+    .card {
+      background-color: #FFF;
+      color: #0B7377;
+      justify-content: center;
+      align-items: center;
+      display: flex;
+      border-radius: 20px;
+      padding: 0px 5px;
+      margin-bottom: 20px;
+    }
+  
+    .custom-h4 {
+      font-family: 'Manrope', sans-serif;
+      max-width: 600px;
+      text-align: center;
+      line-height: 1.4; 
+      font-size: 50px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+  
+    .custom-button {
+      background-color: #CEDD00; 
+      color: #0B7377; 
+      padding: 10px 20px; 
+      margin-top: 20px; 
+      border: none; 
+      border-radius: 20px; 
+      font-family: 'Sora', sans-serif;
+      font-weight: 600;
+      margin-bottom: 20px;
+      justify-content: center;
+      align-items: center;
+      display: flex;
+    }
+  
+    .container {
+      display: flex;
+      justify-content: center; 
+      align-items: center; 
+    }
+
+  
+</style>
+
+<div class="container">
+  <div class="hero">
+
+    <h3 class="custom-h4">
+        Edit Venue
+    </h3>
+
+    <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <table class="custom-form-bg">
+            {{ form.as_table }}
+            <tr>
+                <td></td>
+                <input type="submit" value="Add Product" class="custom-button"/>
+            </tr>
+        </table>
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

@@ -5,3 +5,6 @@ psycopg2-binary
 requests
 urllib3
 django-environ
+django-ckeditor
+Pillow
+django-cors-headers

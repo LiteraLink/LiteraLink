@@ -1,6 +1,4 @@
 from django.urls import path
-from django.conf import settings
-from django.conf.urls.static import static
 from . import views
 
 app_name = 'dimanasajakapansaja'
@@ -15,5 +13,7 @@ urlpatterns = [
     path('rent_book/<int:book_id>/', views.rent_book, name='rent_book'),
     path('return_book/<int:station_id>/<int:book_id>/', views.return_book, name='return_book'),
     path('get-station/', views.get_station_json, name='get_station_json'),
-    path('add-station-ajax/', views.add_station_ajax, name='add_station_ajax')
+    path('add-station-ajax/', views.add_station_ajax, name='add_station_ajax'),
+    path('search/<int:station_id>/', views.get_category, name='search'),
+    path('show-detail-book/<str:book_title>/', views.show_detail_book, name='show_detail_books'),
 ]

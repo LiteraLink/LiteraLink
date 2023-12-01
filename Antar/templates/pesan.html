@@ -1,184 +1,38 @@
 {% extends 'base.html' %}
-{% block content %}
 {% load static %}
 
-<style>
-  body {
-    font-family: 'Sora', sans-serif;
-    background-color: #126164;
-    color: #fff;
-  }
+{% block meta %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+<script type="text/javascript" src="{% static 'js/pesan.js' %}" defer></script>
+{% endblock meta %}
 
-  .hero {
-    padding-top: 20px;
-    padding-bottom: 200px; 
-
-  }
-
-  .persegi-panjang {
-    height: 10px; /* Tinggi elemen */
-    width: 100px;
-    margin-top: 10px;
-    background-color: #FFFF; /* Warna latar belakang, ganti dengan warna yang Anda inginkan */
-    }
-
-  .container-bg{
-    max-width: 960px;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-
-  .custom-bg {
-    background-color: #CEDD00; 
-    color: #0B7377; 
-  }
-
-  .card-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    grid-gap: 5px;
-  }
-
-  .card {
-    background-color: #FFF;
-    color: #0B7377;
-    border-radius: 20px;
-    padding: 0px 5px;
-    margin-bottom: 20px;
-  }
-
-  .card-body {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-
-  .custom-h4 {
-    font-family: 'Manrope', sans-serif;
-    max-width: 600px;
-    text-align: center;
-    margin: 0 auto;
-    line-height: 1.4; 
-    font-size: 18px;
-  }
-
-  .custom-button {
-    background-color: #CEDD00; 
-    color: #0B7377; 
-    padding: 10px 20px; 
-    margin-top: 20px; 
-    border: none; 
-    border-radius: 20px; 
-    font-family: 'Sora', sans-serif;
-    font-weight: 600;
-  }
-
-  .container {
-    display: flex;
-    justify-content: center; 
-    align-items: center; 
-  }
-</style>
-
-<nav class="navbar navbar-expand-lg navbar-light shadow custom-bg" style="background-color: #0B7377;" >
-    <div class="container-fluid">
-        <a class="navbar-brand text-white" href="#">LiteraLink</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav ms-auto">
-        <a class="nav-link active text-white" aria-current="page" href="#">Antar</a>
-        <a class="nav-link text-white" href="#">BacaDiTempat</a>
-        <a class="nav-link text-white" href="#">DimanaSajaKapanSaja</a>
-        <a class="nav-link disabled text-white" aria-disabled="true">Bibliofilia</a>
-    </div>
-</div>
-</div>
-</nav>
-<br>
-<div class="container">
+{% block content %}
+<body style="background-color: #126164;color: #fff;">
+  <br>
+  <div class="container">
     <h3 style="font-weight: 700; text-align: center;">
       Form Pengantaran Buku
     </h3>
   </div>
   <div class="container">
     <div class="persegi-panjang"></div>
-</div>
-<br>
-<div class="container-fluid" style="margin-bottom: 20px;max-width: 600px;">
-    <div class="mb-3">
-        <label for="nama_lengkap" class="col-form-label">Nama Lengkap:</label>
-        <input type="text" class="form-control col-md-6" id="nama_lengkap" name="nama_lengkap">
-    </div>
-    <div class="mb-3">
-        <label for="nomor_telepon" class="col-form-label">Nomor Telepon:</label>
-        <input type="text" class="form-control col-md-6" id="nomor_telepon" name="nomor_telepon">
-    </div>
-    <div class="mb-3">
-        <label for="alamat_pengiriman" class="col-form-label">Alamat:</label>
-        <textarea class="form-control col-md-6" id="alamat_pengiriman" name="alamat_pengiriman"></textarea>
-    </div>
-    <div class="mb-3">
-        <label for="jumlah_buku" class="col-form-label">Jumlah:</label>
-        <input type="number" class="form-control col-md-6" id="jumlah_buku" name="jumlah_buku">
-    </div>
-    <div class="mb-3">
-        <label for="durasi_peminjaman" class="col-form-label">Durasi Peminjaman:</label>
-        <div class="input-group">
-            <input type="number" class="form-control col-md-6" id="durasi_peminjaman" name="durasi_peminjaman">
-            <span class="input-group-text" style="color: #0B7377;">hari</span>
-        </div>
-    </div>
-    <div class="container">
+  </div>
+  <br>
+  <div class="container-fluid" style="margin-bottom: 20px;max-width: 400px;">
+    <form id="form" onsubmit="return false;">
+      {% csrf_token %}
+      {{form.as_p}}
+      <div class="container">
         <a href="{% url 'antar:show_list_books' %}">
-            <button type="button" class="btn custom-button" type="button">Kembali</button>
-          </a>
-        <!-- <button type="reset" class="custom-button" style="margin-right: 10px; margin-left: 10px;">Reset</button> -->
-    </div>
-    <div class="container">
-        <button type="button" class="custom-button"id="button_add">Antar Sekarang</button>
-    </div>
-</div>
-
-<script>
-    async function getProducts() {
-        return fetch("{% url 'antar:get_product_json' %}").then((res) => res.json())
-    }
-
-    async function deleteProduct(id) {
-        const response = await fetch(`/delete_product_ajax/${id}`);
-        refreshProducts();
-    }
-
-    function addProduct() {
-        fetch("/antar-buku-ajax/", {
-            method: "POST",
-            body: new FormData(document.querySelector('#form'))
-        })
-        .then(response => {
-            if (response.ok) {
-                // Refresh daftar produk setelah produk berhasil ditambahkan.
-                refreshProducts();
-            } else {
-                // Tangani kesalahan jika permintaan gagal.
-                console.error("Gagal menambahkan produk.");
-            }
-        })
-        .catch(error => {
-            console.error("Terjadi kesalahan: " + error);
-        });
-
-        document.getElementById("form").reset();
-        return false;
-    }
-
-    // Tambahkan event listener untuk memanggil addProduct saat tombol diklik.
-    document.getElementById("button_add").addEventListener("click", addProduct);
-
-
-    refreshProducts()
-</script>
+          <button type="button" class="btn" style="background-color: #CEDD00;color: #0B7377;"
+            type="button">Kembali</button>
+        </a>
+      </div>
+      <br>
+      <div class="container">
+        <button type="button" class="btn" style="background-color: #CEDD00;color: #0B7377;" id="button_add" onclick="addProduct({{id_buku}})">Antar Sekarang</button>
+      </div>
+      </p>
+  </div>
+</body>
 {% endblock content %}

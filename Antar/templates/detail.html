@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock meta %}
+
+
+{% block content %}
+<body style="background-color: #126164;">
+  <br>
+  <div class="container">
+    <div class="bentuk">
+      <div class="container">
+
+        <h3 style="font-weight: 700; text-align: center; color: white;">
+          Detail Checkout Buku
+        </h3>
+      </div>
+      <div class="container">
+        <div class="persegi-panjang"></div>
+      </div>
+      <br>
+      <br>
+      <form style="color: white;" method="POST" action="{% url 'antar:update_order_status' id=id %}">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="nama_lengkap">Nama Lengkap</label>
+          <input style="color: grey;" type="text" class="form-control" id="nama_lengkap" name="nama_lengkap"
+            value="{{ nama_lengkap }}" readonly disabled>
+        </div>
+        <div class="form-group">
+          <label for="nomor_telepon">Nomor Telepon</label>
+          <input style="color: grey;" type="text" class="form-control" id="nomor_telepon" name="nomor_telepon"
+            value="{{ nomor_telepon }}" readonly disabled>
+        </div>
+        <div class="form-group">
+          <label for="alamat_pengiriman">Alamat Pengiriman</label>
+          <input style="color: grey;" type="text" class="form-control" id="alamat_pengiriman" name="alamat_pengiriman"
+            value="{{ alamat_pengiriman }}" readonly disabled>
+        </div>
+        <div class="form-group">
+          <label for="nama_buku_dipesan">Nama Buku Dipesan</label>
+          <input style="color: grey;" type="text" class="form-control" id="nama_buku_dipesan" name="nama_buku_dipesan"
+            value="{{ nama_buku_dipesan }}" readonly disabled>
+        </div>
+        <div class="form-group">
+          <label for="jumlah_buku_dipesan">Jumlah Buku Dipesan</label>
+          <input style="color: grey;" type="text" class="form-control" id="jumlah_buku_dipesan"
+            name="jumlah_buku_dipesan" value="{{ jumlah_buku_dipesan }}" readonly disabled>
+        </div>
+        <div class="form-group">
+          <label for="durasi_peminjaman">Durasi Peminjaman (Hari)</label>
+          <input style="color: grey;" type="text" class="form-control" id="durasi_peminjaman" name="durasi_peminjaman"
+            value="{{ durasi_peminjaman }}" readonly disabled>
+        </div>
+        <div class="form-group">
+          <label for="total_payment">Total Payment</label>
+          <input style="color: grey;" type="text" class="form-control" id="total_payment" name="total_payment"
+            value="{{ total_payment }}" readonly disabled>
+        </div>
+        <div class="form-group">
+          <label for="tanggal_pengiriman">Tanggal Pengiriman</label>
+          <input style="color: grey;" type="text" class="form-control" id="tanggal_pengiriman" name="tanggal_pengiriman"
+            value="{{ tanggal_pengiriman }}" readonly disabled>
+        </div>
+        <div class="form-group">
+          <label for="waktu_pengiriman">Waktu Pengiriman</label>
+          <input style="color: grey;" type="text" class="form-control" id="waktu_pengiriman" name="waktu_pengiriman"
+            value="{{ waktu_pengiriman }}" readonly disabled>
+        </div>
+        <div class="form-group">
+          <label for="status_pesanan">Status Pesanan</label>
+          {% if role == "A" %}
+          <input type="text" class="form-control" id="status_pesanan" name="status_pesanan"
+            value="{{ status_pesanan }}">
+          {% else %}
+          <input style="color: grey;" type="text" class="form-control" id="status_pesanan" name="status_pesanan"
+            value="{{ status_pesanan }}" readonly disabled>
+          {% endif %}
+        </div>
+        <br>
+        <div class="container">
+          <a href="{% url 'antar:show_list_checkout_all' %}">
+            <button style="background-color: #CEDD00;color: #0B7377;" type="button" class="btn custom-bg"
+              type="button">Kembali</button>
+          </a>
+        </div>
+        <br>
+        {% if role == "A" %}
+        <div class="container">
+          <!-- <a href="{% url 'antar:update_order_status' id=id %}"> -->
+          <button type="submit" class="btn" style="background-color: #CEDD00;color: #0B7377;"
+            type="button">Simpan</button>
+        </div>
+        {% else %}
+        <div class="container">
+          <button type="submit" class="btn" style="background-color: #CEDD00;color: #0B7377;" type="button"
+            disabled>Simpan</button>
+        </div>
+        {% endif %}
+      </form>
+
+    </div>
+  </div>
+</body>
+{% endblock content %}

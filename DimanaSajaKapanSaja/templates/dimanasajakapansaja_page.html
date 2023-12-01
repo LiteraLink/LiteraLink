@@ -1,87 +1,69 @@
 {% extends 'base.html' %}
+{% load static %}
+
 
 {% block meta %}
-<style>
-    body {
-        padding: 100px;
-    }
-
-    .container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
-        
-    }
-
-    .card-cont {
-        padding: 35px;
-        width: 600px; 
-        height: 250px;
-        border: solid 1px;
-        border-radius: 20px;
-        margin: 10px; 
-        display: flex;
-        flex-direction: row;
-    }
-
-</style>
+<link rel="stylesheet" href="{% static 'css/index.css' %}">
+<script src="{% static 'js/script.js' %}" defer></script>
 {% endblock meta %}
 
 {% block content %}
-<h1>DimanaSajaKapanSaja</h1>
+<div class="wholepage">
 
-<div class="container" id="station-container"></div>
-<br>
-<a href="{% url 'dimanasajakapansaja:add_station' %}">
-    <button>
-        Tambah Station
-    </button>
-</a>
-
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Add New Product</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form action="" method="POST" enctype="multipart/form-data" id="form" onsubmit="return false;">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="name" class="col-form-label">Name:</label>
-                        <input type="text" class="form-control" id="name" name="name">
+    <h1>DimanaSajaKapanSaja</h1>
+    
+    <div class="container" id="station-container"></div>
+    <br>
+    
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 style="color: black;" class="modal-title fs-5" id="exampleModalLabel">Add New Product</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="POST" enctype="multipart/form-data" id="form" onsubmit="return false;">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label style="color: black;" for="name" class="col-form-label">Name:</label>
+                            <input type="text" class="form-control" id="name" name="name">
+                        </div>
+                        <div class="mb-3" style="display: flex; flex-direction: column;">
+                            <label style="color: black;" for="price" class="col-form-label">Address:</label>
+                            <textarea class="text" id="address" name="address"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label style="color: black;" for="description" class="col-form-label">Jam Operasional:</label>
+                            <input type="text" class="form-control" id="opening_hours" name="opening_hours">
+                        </div>
+                        <div class="mb-3">
+                            <label style="color: black;" for="name" class="col-form-label">Rentable:</label>
+                            <input type="number" class="form-control" id="rentable" name="rentable">
+                        </div>
+                        <div class="mb-3">
+                            <label style="color: black;" for="price" class="col-form-label">Returnable:</label>
+                            <input type="number" class="form-control" id="returnable" name="returnable">
+                        </div>
+                        <div class="mb-3">
+                            <label style="color: black;" for="description" class="col-form-label">Map Location:</label>
+                            <input type="file" class="form-control" id="map_location" name="map_location">
+                        </div>
+                    </form>
+                    <div class="modal-footer">
+                        <button style="border-radius: 20px;" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="custom-button" id="button_add" data-bs-dismiss="modal">Tambah Station</button>
                     </div>
-                    <div class="mb-3" style="display: flex; flex-direction: column;">
-                        <label for="price" class="col-form-label">Address:</label>
-                        <textarea class="text" id="address" name="address"></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="description" class="col-form-label">Jam Operasional:</label>
-                        <input type="text" class="form-control" id="opening_hours" name="opening_hours">
-                    </div>
-                    <div class="mb-3">
-                        <label for="name" class="col-form-label">Rentable:</label>
-                        <input type="number" class="form-control" id="rentable" name="rentable">
-                    </div>
-                    <div class="mb-3">
-                        <label for="price" class="col-form-label">Returnable:</label>
-                        <input type="number" class="form-control" id="returnable" name="returnable">
-                    </div>
-                    <div class="mb-3">
-                        <label for="description" class="col-form-label">Map Location:</label>
-                        <input type="file" class="form-control" id="map_location" name="map_location">
-                    </div>
-                </form>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="button_add" data-bs-dismiss="modal">Tambah Station</button>
                 </div>
             </div>
         </div>
     </div>
+    
+    {% if user.role == 'A' %}
+    <button type="button" class="custom-button" data-bs-toggle="modal" data-bs-target="#exampleModal">Tambah Station</button>
+    {% endif %}
 </div>
-
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Tambah Station</button>
+<div id="userRole" data-role="{% if user.role %}{{ user.role }}{% endif %}"></div>
 
 <script>
     async function getProducts() {

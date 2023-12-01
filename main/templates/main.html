@@ -10,7 +10,7 @@
   }
   
   .hero {
-    background-image: url({% static "img/Group7.png" %});
+    background-image: url("../static/img/Group7.png");
     padding-bottom: 210px; /* Sesuaikan dengan kebutuhan Anda */
     background-size: 100% auto; /* Mengatur lebar gambar maksimum dan tinggi mengikuti aspek asli */
     background-repeat: no-repeat; /* Mencegah gambar diulang */
@@ -41,6 +41,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     grid-gap: 5px;
+    padding: 80px;
   }
 
   .card {
@@ -85,37 +86,14 @@
 </style>
 
 <div class="hero">
-  <nav class="navbar navbar-expand-lg navbar-light shadow custom-bg" style="background-color: #0B7377;" >
-    <div class="container-fluid">
-      <a class="navbar-brand text-white" href="#">LiteraLink</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav ms-auto">
-          <a class="nav-link active text-white" href="{% url 'antar:show_list_books' %}">Antar</a>
-          <a class="nav-link text-white" href="#">BacaDiTempat</a>
-          <a class="nav-link text-white" href="{% url 'dimanasajakapansaja:show_station' %}">DimanaSajaKapanSaja</a>
-          <a class="nav-link text-white" href="#">Bibliofilia</a>
-        </div>
-      </div>
-    </div>
-  </nav>
-  <br>
   <div class="container-bg" style="padding-top:150px ;" >
     <h2 style="font-weight: 600; margin-top: 20px; text-align: center;">LiteraLink</h2>
     <h4 class="custom-h4">
       LiteraLink is an application with a primary focus on literacy, aiming to help people access books and literature in a more convenient and efficient way.</h4>
     </h4>
   </div>
-  <div class="container">
-    <a href="{% url 'auth:signout' %}">
-      <button class="custom-button">
-          Sign Out
-      </button>
-    </a>
-  </div>
 </div>
+<br>
 <div class="container">
   <h3 style="font-weight: 700; text-align: center;">
     Daftar Buku
@@ -138,7 +116,7 @@
         <h5 class="card-title" style="font-size: 15px; text-align: center;font-weight: 700;">{{book.title}}</h5>
         <p class="card-text" style="font-size: 15px; text-align: center;">Author: {{book.display_authors}}</p>
       </div>
-      <a href="#" class="btn custom-bg">Lihat Detail</a>
+      <a href="show-detail-books/{{book.pk}}" class="btn custom-bg">Lihat Detail</a>
     </div>
   </div>
   {% endfor %}

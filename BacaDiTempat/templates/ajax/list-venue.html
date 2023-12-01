@@ -1,0 +1,29 @@
+{% for venue in venues %}
+  <div class="card">
+      <!-- Tambahkan container untuk ikon edit dan delete -->
+      <div class="card-icons">
+        <a href="{% url 'bacaditempat:edit_venue' venue.pk %}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+            <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.293l6.5-6.5zm-9.761 5.854l-1.48 3.708 3.708-1.48L5.5 9.293 4.207 10.5l-1.475.854z"/>
+          </svg>
+
+        </a>
+        <a href="{% url 'bacaditempat:delete_venue' venue.pk %}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+            <path d="M5.5 5.5A.5.5 0 0 1 6 6h4a.5.5 0 0 1 0 1H6a.5.5 0 0 1 0-1h-.5a.5.5 0 0 1-.5-.5zm2.5 4.5a.5.5 0 0 0-1 0v3a.5.5 0 0 0 1 0v-3zm3 0a.5.5 0 0 0-1 0v3a.5.5 0 0 0 1 0v-3zM5.354 2.354a.5.5 0 0 1 0-.708l1-1a.5.5 0 0 1 .708 0l1 1a.5.5 0 0 1-.708.708L6.5 1.207 5.854 1.854a.5.5 0 0 1-.5.5H5v2a.5.5 0 0 1-.5.5A.5.5 0 0 1 4 3V1a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2a.5.5 0 0 1-.5.5A.5.5 0 0 1 9 3V1.5h-.146a.5.5 0 0 1-.354-.146L7.5.793 6.854 1.146a.5.5 0 0 1-.708-.708l1-1a.5.5 0 0 1 .708 0L9.793 1h.707a1 1 0 0 1 1 1v2a.5.5 0 0 1 .5.5V5H3V3.5a.5.5 0 0 1 .5-.5z"/>
+          </svg>
+        </a>
+      </div>
+
+      <div class="card-body">
+        <div class="venue-info">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt-fill venue-icon" viewBox="0 0 16 16">
+            <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+          </svg>
+          <p class="venue-name">{{ venue.place_name }}</p>
+        </div>
+        <p>{{ venue.address }}</p>
+        <a href="{% url 'bacaditempat:show_detail_venue' venue.pk %}" class="btn btn-primary custom-button">Lihat Detail</a>
+      </div>
+  </div>
+{% endfor %}

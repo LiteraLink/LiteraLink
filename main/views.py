@@ -16,6 +16,20 @@ def show_all_books(request):
 
     return render(request, "main.html", context)
 
+def show_detail_books(request, id=None):
+    books = Book.objects.get(pk=id)
+
+    context= {
+        'bookID':books.bookID,
+        'title' :books.title,
+        'authors' : books.authors,
+        'display_authors' : books.display_authors,
+        'description' : books.description,
+        'categories' : books.categories,
+        'thumbnail' : books.thumbnail
+    }
+    return render(request,'detailBooks.html',context)
+
 
 def seeding_data(request):
 
