@@ -292,3 +292,63 @@ def user_book_json(request, username):
     usera = UserProfile.objects.get(user=user)
     userb = UserBook.objects.filter(user=usera)
     return HttpResponse(serializers.serialize("json", userb), content_type="application/json")
+
+@csrf_exempt
+def rent_book_flutter(request, book_id):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        user = User.objects.get(username=data["username"]).id
+        user = UserProfile.objects.get(user=user)
+        station = Station.objects.get(id=data["station_id"])
+        book = StationBook.objects.get(id=book_id)
+        rented_book = UserBook(
+            user = user,
+            bookID = data["book_id"],
+            title = data["title"], 
+            authors = data["authors"], 
+            display_authors = data["display_authors"], 
+            description = data["description"], 
+            categories = data["categories"], 
+            thumbnail = data["thumbnail"], 
+            feature="DSKS"
+        )
+
+        station.rentable-=1
+        station.returnable+=1
+
+        station.save()
+        rented_book.save()
+        book.delete()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
+
+@csrf_exempt
+def return_book_flutter(request, station_id, book_id):
+    if request.method == 'POST':
+
+        data = json.loads(request.body)
+        book = UserBook.objects.get(id=book_id)
+        station = Station.objects.get(id=station_id)
+        returned_book = StationBook(
+            station=station,
+            bookID = data["book_id"],
+            title = data["title"], 
+            authors = data["authors"], 
+            display_authors = data["display_authors"], 
+            description = data["description"], 
+            categories = data["categories"], 
+            thumbnail = data["thumbnail"], 
+        )
+
+        station.rentable+=1
+        station.returnable-=1
+
+        returned_book.save()
+        book.delete()
+        station.save()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)   
