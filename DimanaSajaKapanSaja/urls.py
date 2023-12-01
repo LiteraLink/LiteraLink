@@ -16,4 +16,6 @@ urlpatterns = [
     path('add-station-ajax/', views.add_station_ajax, name='add_station_ajax'),
     path('search/<int:station_id>/', views.get_category, name='search'),
     path('show-detail-book/<str:book_title>/', views.show_detail_book, name='show_detail_books'),
+    path('station-json/', views.show_station_json, name='show_station_json'),
+    path('station-book-json/<int:station_id>/', views.book_distribution_json, name='station_book'),
 ]

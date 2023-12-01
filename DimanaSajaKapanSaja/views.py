@@ -1,5 +1,6 @@
+import json
 from random import sample
-from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotFound, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotFound, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from DimanaSajaKapanSaja.forms import StationForm
@@ -9,6 +10,8 @@ from main.models import Book
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
+from django.contrib.auth.models import User
+
 
 def create_station_book(station, book):
     return StationBook(
@@ -84,6 +87,8 @@ def add_station_ajax(request):
         response = HttpResponseForbidden("Access Denied")
         return response
     
+    print(request.POST)
+    print(request.FILES)
     if request.method == 'POST':
         name = request.POST.get("name")
         address = request.POST.get("address")
@@ -124,6 +129,7 @@ def add_station(request):
         return response
     station_id = 0
 
+    
     form = StationForm(request.POST, request.FILES)
 
     if form.is_valid() and request.method == "POST":
@@ -166,13 +172,13 @@ def edit_station(request, station_id):
     }
 
     form = StationForm(request.POST or None, initial=initial_data, instance=station)
+    print(request.POST)
+    print(request.FILES)
 
     if form.is_valid() and request.method == "POST":
         if 'map_location' in request.FILES:
-            print("abc")
             station.map_location = request.FILES.get("map_location")
         form.save()
-        print("def")
         return HttpResponseRedirect(reverse('dimanasajakapansaja:show_station'))
 
     context = {'form': form}
@@ -273,3 +279,16 @@ def flush(request):
     response = HttpResponse("flushhhh")
     return response
 
+def show_station_json(request):
+    stations = Station.objects.all()
+    return HttpResponse(serializers.serialize("json", stations), content_type="application/json")
+
+def book_distribution_json(request, station_id):
+    books = StationBook.objects.filter(station = station_id)
+    return HttpResponse(serializers.serialize("json", books), content_type="application/json")   
+
+def user_book_json(request, username):
+    user = User.objects.get(username=username)
+    usera = UserProfile.objects.get(user=user)
+    userb = UserBook.objects.filter(user=usera)
+    return HttpResponse(serializers.serialize("json", userb), content_type="application/json")
