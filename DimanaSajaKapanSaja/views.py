@@ -351,4 +351,67 @@ def return_book_flutter(request, station_id, book_id):
 
         return JsonResponse({"status": "success"}, status=200)
     else:
-        return JsonResponse({"status": "error"}, status=401)   
+        return JsonResponse({"status": "error"}, status=401)
+
+@csrf_exempt 
+def add_station_flutter(request):
+    if request.method == 'POST':
+        name = request.POST.get("name")
+        address = request.POST.get("address")
+        opening_hours = request.POST.get("opening_hours")
+        rentable = request.POST.get("rentable")
+        returnable = request.POST.get("returnable")
+        map_location = request.FILES.get("map_location")
+
+        new_station = Station(
+            name=name,
+            address=address,
+            opening_hours=opening_hours,
+            rentable=rentable,
+            returnable=returnable,
+            map_location=map_location
+        )
+        new_station.save()
+
+        station = Station.objects.get(id=new_station.id)
+        amount = station.rentable
+        books = sample(list(Book.objects.all()), amount)
+
+        for book in books:
+            station_book = create_station_book(station, book)
+            station_book.save()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=400)
+    
+@csrf_exempt
+def del_station_flutter(request):
+    data = json.loads(request.body)
+    station = Station.objects.get(id=data["station_id"])
+    station.delete()
+
+    return JsonResponse({"status": "success"}, status=200)
+
+@csrf_exempt
+def edit_station_flutter(request, station_id):
+    station = Station.objects.get(id=station_id)
+
+    initial_data = {
+        'name': station.name,
+        'address': station.address,
+        'opening_hours': station.opening_hours,
+        'rentable': station.rentable,
+        'returnable': station.returnable,
+        'map_location': station.map_location,
+    }
+
+    form = StationForm(request.POST or None, initial=initial_data, instance=station)
+
+    if form.is_valid() and request.method == "POST":
+        if 'map_location' in request.FILES:
+            station.map_location = request.FILES.get("map_location")
+        form.save()
+
+
+    return JsonResponse({"status": "success"}, status=200)

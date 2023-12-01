@@ -21,4 +21,7 @@ urlpatterns = [
     path('rent_book_flutter/<int:book_id>/', views.rent_book_flutter, name='rent_book_flutter'),
     path('return_book_flutter/<int:station_id>/<int:book_id>/', views.return_book_flutter, name='return_book_flutter'),
     path('user_book_json/<str:username>/', views.user_book_json, name='user_book_json'),
+    path('add_station_flutter/', views.add_station_flutter, name="add_station_flutter"),
+    path('del_station_flutter/', views.del_station_flutter, name="del_station_flutter"),
+    path('edit_station_flutter/<int:station_id>/', views.edit_station_flutter, name='edit_station_flutter')
 ]
