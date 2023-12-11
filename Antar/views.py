@@ -1,6 +1,8 @@
 from datetime import timedelta
+from datetime import datetime
+import json
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.core import serializers
@@ -11,7 +13,123 @@ from Antar.forms import ProductForm
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
+from django.contrib.auth.models import User
 
+"""
+function untuk kebutuhan flutter App
+"""
+
+@csrf_exempt
+# meng-update status pesanan buku user
+def update_order_status(request):
+    if request.method == 'POST':
+        try:
+            # asumsikan body request mengandung 'new_status'
+            data = json.loads(request.body)
+            print(data)
+            new_status = data['new_status']
+            
+            # temukan order dengan ID yang diberikan dan perbarui statusnya
+            person = Person.objects.get(id=data['delivery_id'])
+            person.status_pesanan = new_status  # asumsikan model Order memiliki field 'status'
+            person.save()
+            
+            # kembalikan response sukses
+            return JsonResponse({"status": "success"}, status=200)
+        except Person.DoesNotExist:
+            return JsonResponse({"status": "order_not_found"}, status=404)
+        except Exception as e:
+            # tangkap exception lainnya dan kembalikan sebagai error
+            return JsonResponse({"status": "error", "message": str(e)}, status=500)
+    else:
+        # handle non-POST requests here if needed
+        return JsonResponse({"status": "invalid_request"}, status=400)
+
+
+@csrf_exempt
+# membatalkan pesanan buku user
+def delete_product_flutter(request, id=None):
+    persons = Person.objects.get(pk=id)
+    persons.delete()
+    return JsonResponse({"status": "success"}, status=200)
+
+@csrf_exempt
+# menambahkan pesanan buku user
+def add_stock_flutter(request, id=None):
+    persons = Person.objects.get(pk=id)
+    persons.jumlah_buku_dipesan += 1
+    persons.save()
+    return JsonResponse({"status": "success"}, status=200)
+
+@csrf_exempt
+# mengurangi pesanan buku user  
+def sub_stock_flutter(request, id=None):
+    persons = Person.objects.get(pk=id)
+    if persons.jumlah_buku_dipesan > 1:
+        persons.jumlah_buku_dipesan -= 1
+        persons.save()
+        return JsonResponse({"status": "success"}, status=200)
+    else : 
+        return JsonResponse({"status": "error"}, status=401)
+
+@csrf_exempt
+def show_list_checkout_flutter(request,username):
+    user = User.objects.get(username=username)
+    userprofile = UserProfile.objects.get(user=user)
+    role = userprofile.role
+    if role == "A":
+        data = Person.objects.all()
+    else:
+        # asumsikan Anda telah mendapatkan received_username dari request
+        # received_username = request.GET.get('username')  # Contoh untuk metode GET
+        # Atau untuk POST: received_username = request.POST.get('username')
+
+        try:
+            userApp = user
+            data = Person.objects.filter(user=userApp)
+        except userprofile.DoesNotExist:
+            # Handle the case where the User does not exist
+            data = []
+
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+
+@csrf_exempt
+def pesan_buku_flutter(request, idBuku, username):
+    print("function pesan buku untuk flutter ke panggil")
+    buku=Book.objects.get(pk=idBuku)
+
+    # Hitung total_payment
+    harga_per_unit = 5000  # Ganti dengan harga per unit yang sesuai
+    ongkos_kirim = 12000
+    
+    if request.method == 'POST':
+        
+        data = json.loads(request.body)
+
+        new_person = Person.objects.create(
+            user = User.objects.get(username=username),
+            nama_lengkap = data["nama_lengkap"],
+            nomor_telepon = data["nomor_telepon"],
+            alamat_pengiriman = data["alamat_pengiriman"],
+            nama_buku_dipesan = buku.title,
+            jumlah_buku_dipesan = int(data["jumlah_buku_dipesan"]),
+            durasi_peminjaman = int(data["durasi_peminjaman"]),
+            total_payment = ongkos_kirim + ( int(data["durasi_peminjaman"]) * harga_per_unit),
+            tanggal_pengiriman = datetime.now(),
+            waktu_pengiriman= timedelta(hours=2),
+            status_pesanan = "Dalam Pengiriman",
+        )
+
+        new_person.save()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
+
+
+"""
+function untuk kebutuhan Django App
+"""
 # menampilan list-list buku yang akan di pesan user
 @login_required(login_url='auth:signin')
 def show_list_books(request):
@@ -52,6 +170,7 @@ def show_list_checkout_all(request):
         empty_message = "Belum ada pesanan yang harus di antar."
         return render(request, 'checkout.html', {'empty_message': empty_message, 'role': role})
     
+    
 def show_list_checkout_filter(request):
     userprofile = UserProfile.objects.get(user=request.user)
     print(userprofile)
@@ -69,24 +188,24 @@ def show_list_checkout_filter(request):
         empty_message = "Belum ada pesanan yang harus di antar."
         return render(request, 'checkout.html', {'empty_message': empty_message, 'role': role})
 
-def update_order_status(request, id=None):
-    print("berhasil ke update order status")
-    userprofile = UserProfile.objects.get(user=request.user)
-    role = userprofile.role
-    if role != 'A':
-        return HttpResponseForbidden("Anda tidak memiliki izin untuk melakukan tindakan ini.")
+# def update_order_status(request, id=None):
+#     print("berhasil ke update order status")
+#     userprofile = UserProfile.objects.get(user=request.user)
+#     role = userprofile.role
+#     if role != 'A':
+#         return HttpResponseForbidden("Anda tidak memiliki izin untuk melakukan tindakan ini.")
     
-    persons = Person.objects.get(pk=id)
-    print(request.method)
-    if request.method == 'POST':
-        # Periksa apakah status pesanan telah diubah dan lakukan validasi jika diperlukan.
-        status_pesanan = request.POST.get("status_pesanan")
-        persons.status_pesanan = status_pesanan
-        persons.save()
-        print(persons.status_pesanan)
-        return show_detail(request, id)  # Redirect ke halaman konfirmasi atau lainnya
+#     persons = Person.objects.get(pk=id)
+#     print(request.method)
+#     if request.method == 'POST':
+#         # Periksa apakah status pesanan telah diubah dan lakukan validasi jika diperlukan.
+#         status_pesanan = request.POST.get("status_pesanan")
+#         persons.status_pesanan = status_pesanan
+#         persons.save()
+#         print(persons.status_pesanan)
+#         return show_detail(request, id)  # Redirect ke halaman konfirmasi atau lainnya
     
-    return show_detail(request, id)
+#     return show_detail(request, id)
     
 def pemesanan(request,id):
     books = Book.objects.get(pk=id)
@@ -149,7 +268,7 @@ def show_detail(request, id=None):
 
 
 # membatalkan pesanan buku user
-def delete_product_ajax(request, id=None):
+def delete_product(request, id=None):
     persons = Person.objects.get(pk=id)
     persons.delete()
     return HttpResponseRedirect(reverse('antar:show_list_checkout_all'))

@@ -1,5 +1,6 @@
+import json
 from random import sample
-from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotFound, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotFound, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from DimanaSajaKapanSaja.forms import StationForm
@@ -9,8 +10,9 @@ from main.models import Book
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
+from django.contrib.auth.models import User
 
-<<<<<<< HEAD
+
 def create_station_book(station, book):
     return StationBook(
         station=station,
@@ -23,8 +25,6 @@ def create_station_book(station, book):
         thumbnail=book.thumbnail,
     )
 
-=======
->>>>>>> 5c58a0ed9bf06d6d9c6099bf284b8ffca75802b2
 
 @login_required(login_url='auth:signin')
 def show_station(request):
@@ -40,7 +40,6 @@ def show_station(request):
 
     return response
 
-<<<<<<< HEAD
 @login_required(login_url='auth:signin')
 def show_station_detail(request, station_id, QUERY=None):
     category_set = set()
@@ -65,11 +64,6 @@ def show_station_detail(request, station_id, QUERY=None):
     else:
         station_book = StationBook.objects.filter(station=station_id).filter(categories=QUERY)
 
-=======
-def show_station_detail(request, station_id):
-    station = Station.objects.get(id=station_id)
-    station_book = StationBook.objects.filter(station=station_id)
->>>>>>> 5c58a0ed9bf06d6d9c6099bf284b8ffca75802b2
     member = UserProfile.objects.get(user=request.user)
     rented_book = UserBook.objects.filter(feature="DSKS").filter(user=member)
 
@@ -78,19 +72,13 @@ def show_station_detail(request, station_id):
         "user": member,
         "books": station_book,
         "rented_books": rented_book,
-<<<<<<< HEAD
         "categories": category_list
-=======
->>>>>>> 5c58a0ed9bf06d6d9c6099bf284b8ffca75802b2
     }
     response = render(request, "station_detail.html", context)
 
     return response
 
-<<<<<<< HEAD
 @login_required(login_url='auth:signin')
-=======
->>>>>>> 5c58a0ed9bf06d6d9c6099bf284b8ffca75802b2
 @csrf_exempt
 def add_station_ajax(request):
     station_id = 0
@@ -99,6 +87,8 @@ def add_station_ajax(request):
         response = HttpResponseForbidden("Access Denied")
         return response
     
+    print(request.POST)
+    print(request.FILES)
     if request.method == 'POST':
         name = request.POST.get("name")
         address = request.POST.get("address")
@@ -116,41 +106,22 @@ def add_station_ajax(request):
         books = sample(list(Book.objects.all()), amount)
 
         for book in books:
-<<<<<<< HEAD
             station_book = create_station_book(station, book)
-=======
-            station_book = StationBook(
-                station=station,
-                bookID=book.bookID,
-                title=book.title,
-                authors=book.authors,
-                display_authors=book.display_authors,
-                description=book.description,
-                categories=book.categories,
-                thumbnail=book.thumbnail,
-            )
->>>>>>> 5c58a0ed9bf06d6d9c6099bf284b8ffca75802b2
             station_book.save()
 
         return HttpResponse(b"CREATED", status=201)
 
     return HttpResponseNotFound()
 
-<<<<<<< HEAD
 @login_required(login_url='auth:signin')
 @csrf_exempt
-=======
->>>>>>> 5c58a0ed9bf06d6d9c6099bf284b8ffca75802b2
 def get_station_json(request):
     station = Station.objects.all()
     response = HttpResponse(serializers.serialize('json', station))
     return response
     
-<<<<<<< HEAD
 @login_required(login_url='auth:signin')
 @csrf_exempt
-=======
->>>>>>> 5c58a0ed9bf06d6d9c6099bf284b8ffca75802b2
 def add_station(request):
     user = UserProfile.objects.get(user=request.user)
     if(user.role != 'A'):
@@ -158,6 +129,7 @@ def add_station(request):
         return response
     station_id = 0
 
+    
     form = StationForm(request.POST, request.FILES)
 
     if form.is_valid() and request.method == "POST":
@@ -170,20 +142,7 @@ def add_station(request):
         books = sample(list(Book.objects.all()), amount)
 
         for book in books:
-<<<<<<< HEAD
             station_book = create_station_book(station, book)
-=======
-            station_book = StationBook(
-                station=station,
-                bookID=book.bookID,
-                title=book.title,
-                authors=book.authors,
-                display_authors=book.display_authors,
-                description=book.description,
-                categories=book.categories,
-                thumbnail=book.thumbnail,
-            )
->>>>>>> 5c58a0ed9bf06d6d9c6099bf284b8ffca75802b2
             station_book.save()
 
         return HttpResponseRedirect(reverse('dimanasajakapansaja:show_station'))
@@ -213,13 +172,13 @@ def edit_station(request, station_id):
     }
 
     form = StationForm(request.POST or None, initial=initial_data, instance=station)
+    print(request.POST)
+    print(request.FILES)
 
     if form.is_valid() and request.method == "POST":
         if 'map_location' in request.FILES:
-            print("abc")
             station.map_location = request.FILES.get("map_location")
         form.save()
-        print("def")
         return HttpResponseRedirect(reverse('dimanasajakapansaja:show_station'))
 
     context = {'form': form}
@@ -240,20 +199,10 @@ def del_station(request, station_id):
     response = redirect('dimanasajakapansaja:show_station')
     return response
 
-<<<<<<< HEAD
 @login_required(login_url='auth:signin')
 @csrf_exempt
 def rent_book(request, book_id):
     user = UserProfile.objects.get(user=request.user)
-=======
-def rent_book(request, book_id):
-    user = UserProfile.objects.get(user=request.user)
-
-    if(user.role != 'M'):
-        response = HttpResponseForbidden("Access Denied")
-        return response
-      
->>>>>>> 5c58a0ed9bf06d6d9c6099bf284b8ffca75802b2
     book = StationBook.objects.get(id=book_id)
     station_id = book.station.pk
     station = Station.objects.get(id=station_id)
@@ -279,11 +228,8 @@ def rent_book(request, book_id):
     response = HttpResponseRedirect(reverse("dimanasajakapansaja:detail", args=[station_id]))
     return response
 
-<<<<<<< HEAD
 @login_required(login_url='auth:signin')
 @csrf_exempt
-=======
->>>>>>> 5c58a0ed9bf06d6d9c6099bf284b8ffca75802b2
 def return_book(request, station_id ,book_id):
     user = UserProfile.objects.get(user=request.user)
     if(user.role != 'M'):
@@ -292,20 +238,7 @@ def return_book(request, station_id ,book_id):
     
     book = UserBook.objects.get(id=book_id)
     station = Station.objects.get(id=station_id)
-<<<<<<< HEAD
     returned_book = create_station_book(station, book)
-=======
-    returned_book = StationBook(
-        station=station,
-        bookID=book.bookID,
-        title=book.title, 
-        authors=book.authors, 
-        display_authors=book.display_authors, 
-        description=book.description, 
-        categories=book.categories, 
-        thumbnail=book.thumbnail, 
-    )
->>>>>>> 5c58a0ed9bf06d6d9c6099bf284b8ffca75802b2
 
     station.rentable+=1
     station.returnable-=1
@@ -317,7 +250,6 @@ def return_book(request, station_id ,book_id):
     response = HttpResponseRedirect(reverse("dimanasajakapansaja:detail", args=[station_id]))
     return response
 
-<<<<<<< HEAD
 @login_required(login_url='auth:signin')
 @csrf_exempt
 def get_category(request, station_id):
@@ -340,17 +272,146 @@ def show_detail_book(request, book_title):
     }
     return render(request,'detailBooks.html',context)
 
-=======
->>>>>>> 5c58a0ed9bf06d6d9c6099bf284b8ffca75802b2
 def flush(request):
     books = StationBook.objects.all()
     books.delete()
 
     response = HttpResponse("flushhhh")
     return response
-<<<<<<< HEAD
-=======
+
+def show_station_json(request):
+    stations = Station.objects.all()
+    return HttpResponse(serializers.serialize("json", stations), content_type="application/json")
+
+def book_distribution_json(request, station_id):
+    books = StationBook.objects.filter(station = station_id)
+    return HttpResponse(serializers.serialize("json", books), content_type="application/json")   
+
+def user_book_json(request, username):
+    user = User.objects.get(username=username)
+    usera = UserProfile.objects.get(user=user)
+    userb = UserBook.objects.filter(user=usera)
+    return HttpResponse(serializers.serialize("json", userb), content_type="application/json")
+
+@csrf_exempt
+def rent_book_flutter(request, book_id):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        user = User.objects.get(username=data["username"]).id
+        user = UserProfile.objects.get(user=user)
+        station = Station.objects.get(id=data["station_id"])
+        book = StationBook.objects.get(id=book_id)
+        rented_book = UserBook(
+            user = user,
+            bookID = data["book_id"],
+            title = data["title"], 
+            authors = data["authors"], 
+            display_authors = data["display_authors"], 
+            description = data["description"], 
+            categories = data["categories"], 
+            thumbnail = data["thumbnail"], 
+            feature="DSKS"
+        )
+
+        station.rentable-=1
+        station.returnable+=1
+
+        station.save()
+        rented_book.save()
+        book.delete()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
+
+@csrf_exempt
+def return_book_flutter(request, station_id, book_id):
+    if request.method == 'POST':
+
+        data = json.loads(request.body)
+        book = UserBook.objects.get(id=book_id)
+        station = Station.objects.get(id=station_id)
+        returned_book = StationBook(
+            station=station,
+            bookID = data["book_id"],
+            title = data["title"], 
+            authors = data["authors"], 
+            display_authors = data["display_authors"], 
+            description = data["description"], 
+            categories = data["categories"], 
+            thumbnail = data["thumbnail"], 
+        )
+
+        station.rentable+=1
+        station.returnable-=1
+
+        returned_book.save()
+        book.delete()
+        station.save()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
+
+@csrf_exempt 
+def add_station_flutter(request):
+    if request.method == 'POST':
+        name = request.POST.get("name")
+        address = request.POST.get("address")
+        opening_hours = request.POST.get("opening_hours")
+        rentable = request.POST.get("rentable")
+        returnable = request.POST.get("returnable")
+        map_location = request.FILES.get("map_location")
+
+        new_station = Station(
+            name=name,
+            address=address,
+            opening_hours=opening_hours,
+            rentable=rentable,
+            returnable=returnable,
+            map_location=map_location
+        )
+        new_station.save()
+
+        station = Station.objects.get(id=new_station.id)
+        amount = station.rentable
+        books = sample(list(Book.objects.all()), amount)
+
+        for book in books:
+            station_book = create_station_book(station, book)
+            station_book.save()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=400)
+    
+@csrf_exempt
+def del_station_flutter(request):
+    data = json.loads(request.body)
+    station = Station.objects.get(id=data["station_id"])
+    station.delete()
+
+    return JsonResponse({"status": "success"}, status=200)
+
+@csrf_exempt
+def edit_station_flutter(request, station_id):
+    station = Station.objects.get(id=station_id)
+
+    initial_data = {
+        'name': station.name,
+        'address': station.address,
+        'opening_hours': station.opening_hours,
+        'rentable': station.rentable,
+        'returnable': station.returnable,
+        'map_location': station.map_location,
+    }
+
+    form = StationForm(request.POST or None, initial=initial_data, instance=station)
+
+    if form.is_valid() and request.method == "POST":
+        if 'map_location' in request.FILES:
+            station.map_location = request.FILES.get("map_location")
+        form.save()
 
 
->>>>>>> 5c58a0ed9bf06d6d9c6099bf284b8ffca75802b2
-
+    return JsonResponse({"status": "success"}, status=200)
