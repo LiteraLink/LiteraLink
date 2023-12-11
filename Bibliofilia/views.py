@@ -1,4 +1,4 @@
-import datetime
+import json
 from django.db.models import Count
 from django.utils import timezone
 from django.shortcuts import render
@@ -135,7 +135,7 @@ def delete_Replies(request, reply_id):
 def get_Forum_json(request):
     forum = Forum.objects.all()
     # forum.user = request.user
-    return HttpResponse(serializers.serialize('json', forum))
+    return HttpResponse(serializers.serialize('json', forum), content_type='application/json')
 
 def get_ForumReply_json(request):
     forum_replies = ForumReply.objects.all()
@@ -153,7 +153,14 @@ def add_Forum_ajax(request):
         userReview = request.POST.get("userReview")    
         user = request.user
 
-        new_product = Forum(BookName=BookName,bookPicture=bookPicture,userReview=userReview,forumsDescription=forumsDescription,repliesTotal=0, user=user, username=user.username)
+        new_product = Forum(
+            BookName=BookName,
+            bookPicture=bookPicture,
+            userReview=userReview,
+            forumsDescription=forumsDescription,
+            repliesTotal=0, 
+            user=user, 
+            username=user.username)
         
         new_product.save()
 
@@ -181,3 +188,119 @@ def add_replies_ajax(request):
 
         return JsonResponse(response_data, status=201)
     return HttpResponseNotFound()
+
+@csrf_exempt
+def add_Forum_flutter(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+
+        user = User.objects.get(username=data['username']).id
+        user = UserProfile.objects.get(user=user)
+
+        new_product = Forum(
+            BookName=data['BookName'],
+            bookPicture=data['bookPicture'],
+            userReview=data['userReview'],
+            forumsDescription=data['forumsDescription'],
+            repliesTotal=0, 
+            user=user, 
+            username=data['username']
+        )
+        
+        new_product.save()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
+
+@csrf_exempt    
+def add_replies_flutter(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        print(data['username']+'\n')
+        userDjango = User.objects.get(username=data['username'])
+        user = UserProfile.objects.get(user=userDjango.id)
+        forum_id = data['forum_id']
+        forumMain = Forum.objects.get(pk=data['forum_id'])
+        forumMain.repliesTotal += 1
+        forumMain.save()
+
+        forum = get_object_or_404(Forum, id=forum_id)
+
+        new_reply = ForumReply(
+            text = data['text'],
+            user=userDjango, 
+            forum=forum, 
+            username=data['username'],
+
+        )
+        new_reply.save()
+
+        # Return the updated repliesTotal value in the response
+        response_data = {
+            'status' : 'success',
+            'repliesTotal': forumMain.repliesTotal
+        }
+
+        return JsonResponse(response_data, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
+    
+@csrf_exempt
+def delete_Forum_Flutter(request):
+    data = json.loads(request.body)
+    user = User.objects.get(username=data['username']).id
+    user = UserProfile.objects.get(user=user)
+    if user.role != 'A':
+        return JsonResponse({'error': 'Access Denied'}, status=403)
+
+    if request.method == 'DELETE':
+        try:
+            forum = Forum.objects.get(pk=data['forum_id'])
+            forum.delete()
+            return JsonResponse({'message': 'REMOVED'}, status=204)
+        except Forum.DoesNotExist:
+            return JsonResponse({'error': 'Forum not found'}, status=404)
+
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+@csrf_exempt
+def delete_Replies_Flutter(request):
+    data = json.loads(request.body)
+    reply_id = data['reply_id']
+    # user = User.objects.get(username=data['username']).id
+    # user = UserProfile.objects.get(user=user)
+    # if user.role != 'A':
+        # return JsonResponse({'error': 'Access Denied'}, status=403)
+
+    try:
+        forumReplies = ForumReply.objects.get(pk=reply_id)
+
+        # if user.role == 'A':
+        forum = forumReplies.forum
+        if forum.repliesTotal > 0:
+            forum.repliesTotal -= 1
+            forum.save()
+        forumReplies.delete()
+        return JsonResponse({'message': 'REMOVED'}, status=204)
+        # else:
+        #     return JsonResponse({'error': 'Unauthorized'}, status=401)
+    except ForumReply.DoesNotExist:
+        return JsonResponse({'error': 'ForumReply not found'}, status=404)
+
+
+
+def get_ForumReply_json_flutter(request, forum_id):
+    forum_replies = ForumReply.objects.filter(forum=forum_id)
+    serialized_data = serializers.serialize('json', forum_replies)
+    
+    response = HttpResponse(content=serialized_data, content_type='application/json')
+    return response
+
+def get_ForumReplyHead_json_flutter(request, forum_id):
+    forum_replies = Forum.objects.filter(id=forum_id)
+    serialized_data = serializers.serialize('json', forum_replies)
+    
+    response = HttpResponse(content=serialized_data, content_type='application/json')
+    return response
