@@ -189,6 +189,8 @@ def add_replies_ajax(request):
         return JsonResponse(response_data, status=201)
     return HttpResponseNotFound()
 
+#Below is function for flutter
+
 @csrf_exempt
 def add_Forum_flutter(request):
     if request.method == 'POST':

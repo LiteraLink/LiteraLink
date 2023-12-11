@@ -15,10 +15,10 @@ urlpatterns = [
     path('delete_Forum/<int:forum_id>/', views.delete_Forum, name='delete_Forum'),
     path('delete_replies/<int:reply_id>/', views.delete_Replies, name='delete_Replies'),
     path('forum/<int:forum_id>/', views.showChildForum, name='showChildForum'),
-    path('add_Forum_flutter/', views.add_Forum_flutter, name='add_Forum_flutter'),
-    path('add_replies_flutter/', views.add_replies_flutter, name='add_replies_flutter'),
-    path('delete_forum_flutter/', views.delete_Forum_Flutter, name='delete_Forum_Flutter'),
-    path('delete_replies_flutter/', views.delete_Replies_Flutter, name='delete_Replies_Flutter'),
-    path('get_ForumReply_flutter/<int:forum_id>/', views.get_ForumReply_json_flutter, name='get_ForumReply_json_flutter'),
-    path('get_ForumReplyHead_json_flutter/<int:forum_id>/', views.get_ForumReplyHead_json_flutter, name='get_ForumReplyHead_json_flutter'),
+    path('add_Forum_flutter/', views.add_Forum_flutter, name='add_Forum_flutter'), #for flutter
+    path('add_replies_flutter/', views.add_replies_flutter, name='add_replies_flutter'), #for flutter
+    path('delete_forum_flutter/', views.delete_Forum_Flutter, name='delete_Forum_Flutter'), #for flutter
+    path('delete_replies_flutter/', views.delete_Replies_Flutter, name='delete_Replies_Flutter'), #for flutter
+    path('get_ForumReply_flutter/<int:forum_id>/', views.get_ForumReply_json_flutter, name='get_ForumReply_json_flutter'), #for flutter
+    path('get_ForumReplyHead_json_flutter/<int:forum_id>/', views.get_ForumReplyHead_json_flutter, name='get_ForumReplyHead_json_flutter'), #for flutter
 ]
