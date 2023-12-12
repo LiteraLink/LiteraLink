@@ -1,12 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
-
+from authentication.models import UserBook
 
 # Create your models here.
 class Forum (models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     BookName = models.CharField(max_length=255)
+    userbook = models.ForeignKey(UserBook, on_delete=models.SET_NULL, null=True, blank=True)
     forumsDescription = models.CharField(max_length=255)
     bookPicture = models.ImageField(upload_to='reviewimages/')
     userReview = models.TextField(blank=True, null=True)
@@ -30,6 +31,7 @@ class ForumReply(models.Model):
     
     def formatted_timestamp(self):
         return self.timestamp.strftime("%d-%m-%y")
+
 
 class Message(models.Model):
     sender = models.ForeignKey(Forum, on_delete=models.CASCADE)

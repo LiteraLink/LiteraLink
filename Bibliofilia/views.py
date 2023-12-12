@@ -196,12 +196,12 @@ def add_Forum_flutter(request):
     if request.method == 'POST':
         data = json.loads(request.body)
 
-        user = User.objects.get(username=data['username']).id
-        user = UserProfile.objects.get(user=user)
-
+        user = User.objects.get(username=data['username'])
+        # user = UserProfile.objects.get(user=user)
+        print("TEST")
         new_product = Forum(
-            BookName=data['BookName'],
-            bookPicture=data['bookPicture'],
+            BookName=data['bookname'],
+            bookPicture='',
             userReview=data['userReview'],
             forumsDescription=data['forumsDescription'],
             repliesTotal=0, 
@@ -214,6 +214,47 @@ def add_Forum_flutter(request):
         return JsonResponse({"status": "success"}, status=200)
     else:
         return JsonResponse({"status": "error"}, status=401)
+    
+@csrf_exempt
+def add_BookForum_flutter(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+
+        user = User.objects.get(username=data['username'])
+        Userprofile = UserProfile.objects.get(user=user)
+
+        selectedBook = UserBook(
+            user = Userprofile,
+            bookID = data["book_id"],
+            title = data["title"], 
+            authors = data["authors"], 
+            display_authors = data["display_authors"], 
+            description = data["description"], 
+            categories = data["categories"], 
+            thumbnail = data["thumbnail"], 
+            feature="DSKS"
+        )
+        selectedBook.save()
+
+        new_product = Forum(
+            userbook = selectedBook,
+            BookName = selectedBook.title,
+            bookPicture = selectedBook.thumbnail,
+            userReview= data['userReview'],
+            forumsDescription= data['forumsDescription'],
+            repliesTotal=0, 
+            user=user, 
+            username=data['username']
+        )
+        # print(new_product[bookNam])
+        print("TEST")
+        new_product.save()
+
+        # new_product.save()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)    
 
 @csrf_exempt    
 def add_replies_flutter(request):

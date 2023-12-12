@@ -16,6 +16,7 @@ urlpatterns = [
     path('delete_replies/<int:reply_id>/', views.delete_Replies, name='delete_Replies'),
     path('forum/<int:forum_id>/', views.showChildForum, name='showChildForum'),
     path('add_Forum_flutter/', views.add_Forum_flutter, name='add_Forum_flutter'), #for flutter
+    path('add_BookForum_flutter/', views.add_BookForum_flutter, name='add_BookForum_flutter'), #for flutter
     path('add_replies_flutter/', views.add_replies_flutter, name='add_replies_flutter'), #for flutter
     path('delete_forum_flutter/', views.delete_Forum_Flutter, name='delete_Forum_Flutter'), #for flutter
     path('delete_replies_flutter/', views.delete_Replies_Flutter, name='delete_Replies_Flutter'), #for flutter
