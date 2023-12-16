@@ -229,7 +229,7 @@ def add_BookForum_flutter(request):
         new_product = Forum(
             userbook = selectedBook,
             BookName = selectedBook.title,
-            bookPicture = selectedBook.thumbnail,
+            # bookPicture = selectedBook.thumbnail,
             userReview= data['userReview'],
             forumsDescription= data['forumsDescription'],
             repliesTotal=0, 
