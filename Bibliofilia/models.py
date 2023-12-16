@@ -9,7 +9,7 @@ class Forum (models.Model):
     BookName = models.TextField(blank=True, null=True)
     userbook = models.ForeignKey(UserBook, on_delete=models.SET_NULL, null=True, blank=True)
     forumsDescription = models.TextField(blank=True, null=True)
-    bookPicture = models.ImageField(upload_to='reviewimages/')
+    bookPicture = models.URLField(max_length=255, blank=True, null=True)
     userReview = models.TextField(blank=True, null=True)
     repliesTotal = models.IntegerField()
     dateOfPosting = models.DateField(auto_now_add=True)
