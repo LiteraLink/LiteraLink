@@ -281,20 +281,13 @@ def add_replies_flutter(request):
 @csrf_exempt
 def delete_Forum_Flutter(request):
     data = json.loads(request.body)
-    user = User.objects.get(username=data['username'])
-    user = UserProfile.objects.get(user=user)
-    if user.role != 'A':
-        return JsonResponse({'error': 'Access Denied'}, status=403)
 
-    if request.method == 'DELETE':
-        try:
-            forum = Forum.objects.get(pk=data['forum_id'])
-            forum.delete()
-            return JsonResponse({'message': 'REMOVED'}, status=204)
-        except Forum.DoesNotExist:
-            return JsonResponse({'error': 'Forum not found'}, status=404)
-
-    return JsonResponse({'error': 'Invalid request'}, status=400)
+    try:
+        forum = Forum.objects.get(pk=data['forum_id'])
+        forum.delete()
+        return JsonResponse({'message': 'REMOVED'}, status=204)
+    except ForumReply.DoesNotExist:
+        return JsonResponse({'error': 'ForumReply not found'}, status=404)
 
 
 @csrf_exempt
@@ -311,8 +304,6 @@ def delete_Replies_Flutter(request):
             forum.save()
         forumReplies.delete()
         return JsonResponse({'message': 'REMOVED'}, status=204)
-        # else:
-        #     return JsonResponse({'error': 'Unauthorized'}, status=401)
     except ForumReply.DoesNotExist:
         return JsonResponse({'error': 'ForumReply not found'}, status=404)
 
