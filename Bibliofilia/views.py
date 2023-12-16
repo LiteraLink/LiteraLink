@@ -167,6 +167,7 @@ def add_Forum_ajax(request):
         return HttpResponse(b"CREATED", status=201)
     return HttpResponseNotFound()
 
+@csrf_exempt 
 def add_replies_ajax(request):
     if request.method == 'POST':
         text = request.POST.get("text")
@@ -260,7 +261,6 @@ def add_BookForum_flutter(request):
 def add_replies_flutter(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        print(data['username']+'\n')
         userDjango = User.objects.get(username=data['username'])
         user = UserProfile.objects.get(user=userDjango.id)
         forum_id = data['forum_id']
@@ -312,11 +312,6 @@ def delete_Forum_Flutter(request):
 def delete_Replies_Flutter(request):
     data = json.loads(request.body)
     reply_id = data['reply_id']
-    # user = User.objects.get(username=data['username']).id
-    # user = UserProfile.objects.get(user=user)
-    # if user.role != 'A':
-        # return JsonResponse({'error': 'Access Denied'}, status=403)
-
     try:
         forumReplies = ForumReply.objects.get(pk=reply_id)
 
