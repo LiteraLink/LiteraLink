@@ -224,18 +224,8 @@ def add_BookForum_flutter(request):
         user = User.objects.get(username=data['username'])
         Userprofile = UserProfile.objects.get(user=user)
 
-        selectedBook = UserBook(
-            user = Userprofile,
-            bookID = data["book_id"],
-            title = data["title"], 
-            authors = data["authors"], 
-            display_authors = data["display_authors"], 
-            description = data["description"], 
-            categories = data["categories"], 
-            thumbnail = data["thumbnail"], 
-            feature="DSKS"
-        )
-        selectedBook.save()
+        selectedBook = UserBook.objects.get(id=data["book_id"])
+
 
         new_product = Forum(
             userbook = selectedBook,
@@ -328,13 +318,13 @@ def delete_Replies_Flutter(request):
         return JsonResponse({'error': 'ForumReply not found'}, status=404)
 
 
-
 def get_ForumReply_json_flutter(request, forum_id):
     forum_replies = ForumReply.objects.filter(forum=forum_id)
     serialized_data = serializers.serialize('json', forum_replies)
     
     response = HttpResponse(content=serialized_data, content_type='application/json')
     return response
+
 
 def get_ForumReplyHead_json_flutter(request, forum_id):
     forum_replies = Forum.objects.filter(id=forum_id)
