@@ -252,7 +252,6 @@ def add_replies_flutter(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         userDjango = User.objects.get(username=data['username'])
-        user = UserProfile.objects.get(user=userDjango.id)
         forum_id = data['forum_id']
         forumMain = Forum.objects.get(pk=data['forum_id'])
         forumMain.repliesTotal += 1
@@ -282,7 +281,7 @@ def add_replies_flutter(request):
 @csrf_exempt
 def delete_Forum_Flutter(request):
     data = json.loads(request.body)
-    user = User.objects.get(username=data['username']).id
+    user = User.objects.get(username=data['username'])
     user = UserProfile.objects.get(user=user)
     if user.role != 'A':
         return JsonResponse({'error': 'Access Denied'}, status=403)
