@@ -2,12 +2,13 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from authentication.models import UserBook
+from main.models import Book
 
 # Create your models here.
 class Forum (models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     BookName = models.TextField(blank=True, null=True)
-    userbook = models.ForeignKey(UserBook, on_delete=models.SET_NULL, null=True, blank=True)
+    userbook = models.ForeignKey(Book, on_delete=models.SET_NULL, null=True, blank=True)
     forumsDescription = models.TextField(blank=True, null=True)
     bookPicture = models.URLField(max_length=255, blank=True, null=True)
     userReview = models.TextField(blank=True, null=True)
