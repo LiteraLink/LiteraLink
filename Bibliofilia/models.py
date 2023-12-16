@@ -6,9 +6,9 @@ from authentication.models import UserBook
 # Create your models here.
 class Forum (models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    BookName = models.CharField(max_length=255)
+    BookName = models.TextField(blank=True, null=True)
     userbook = models.ForeignKey(UserBook, on_delete=models.SET_NULL, null=True, blank=True)
-    forumsDescription = models.CharField(max_length=255)
+    forumsDescription = models.TextField(blank=True, null=True)
     bookPicture = models.ImageField(upload_to='reviewimages/')
     userReview = models.TextField(blank=True, null=True)
     repliesTotal = models.IntegerField()

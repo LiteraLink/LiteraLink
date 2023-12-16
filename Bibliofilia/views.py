@@ -12,7 +12,7 @@ from django.core import serializers
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages 
 from django.views.decorators.csrf import csrf_exempt
-from authentication.models import UserProfile
+from authentication.models import UserProfile, UserBook
 
 
 @login_required(login_url='auth:signin')
@@ -225,7 +225,6 @@ def add_BookForum_flutter(request):
         Userprofile = UserProfile.objects.get(user=user)
 
         selectedBook = UserBook.objects.get(id=data["book_id"])
-
 
         new_product = Forum(
             userbook = selectedBook,
