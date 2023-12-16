@@ -12,7 +12,7 @@ from django.core import serializers
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages 
 from django.views.decorators.csrf import csrf_exempt
-from authentication.models import UserProfile, UserBook
+from authentication.models import UserProfile
 
 
 @login_required(login_url='auth:signin')
@@ -224,7 +224,18 @@ def add_BookForum_flutter(request):
         user = User.objects.get(username=data['username'])
         Userprofile = UserProfile.objects.get(user=user)
 
-        selectedBook = UserBook.objects.get(id=data["book_id"])
+        selectedBook = UserBook(
+            user = Userprofile,
+            bookID = data["book_id"],
+            title = data["title"], 
+            authors = data["authors"], 
+            display_authors = data["display_authors"], 
+            description = data["description"], 
+            categories = data["categories"], 
+            thumbnail = data["thumbnail"], 
+            feature="DSKS"
+        )
+        selectedBook.save()
 
         new_product = Forum(
             userbook = selectedBook,
@@ -328,13 +339,6 @@ def get_ForumReply_json_flutter(request, forum_id):
 def get_ForumReplyHead_json_flutter(request, forum_id):
     forum_replies = Forum.objects.filter(id=forum_id)
     serialized_data = serializers.serialize('json', forum_replies)
-    
-    response = HttpResponse(content=serialized_data, content_type='application/json')
-    return response
-
-def get_Book_flutter(request, forum_id):
-    Book = UserBook.objects.filter(id=forum_id)
-    serialized_data = serializers.serialize('json', Book)
     
     response = HttpResponse(content=serialized_data, content_type='application/json')
     return response
