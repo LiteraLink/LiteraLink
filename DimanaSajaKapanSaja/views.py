@@ -388,7 +388,7 @@ def add_station_flutter(request):
 @csrf_exempt
 def del_station_flutter(request):
     data = json.loads(request.body)
-    station = Station.objects.get(id=data["station_id"])
+    station = Station.objects.get(id=data["station_id"] )
     station.delete()
 
     return JsonResponse({"status": "success"}, status=200)

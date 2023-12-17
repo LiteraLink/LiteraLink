@@ -1,4 +1,4 @@
-import datetime
+import json
 from django.db.models import Count
 from django.utils import timezone
 from django.shortcuts import render
@@ -12,7 +12,8 @@ from django.core import serializers
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages 
 from django.views.decorators.csrf import csrf_exempt
-from authentication.models import UserProfile
+from authentication.models import UserProfile, UserBook
+from main.models import Book
 
 
 @login_required(login_url='auth:signin')
@@ -135,7 +136,7 @@ def delete_Replies(request, reply_id):
 def get_Forum_json(request):
     forum = Forum.objects.all()
     # forum.user = request.user
-    return HttpResponse(serializers.serialize('json', forum))
+    return HttpResponse(serializers.serialize('json', forum), content_type='application/json')
 
 def get_ForumReply_json(request):
     forum_replies = ForumReply.objects.all()
@@ -153,13 +154,21 @@ def add_Forum_ajax(request):
         userReview = request.POST.get("userReview")    
         user = request.user
 
-        new_product = Forum(BookName=BookName,bookPicture=bookPicture,userReview=userReview,forumsDescription=forumsDescription,repliesTotal=0, user=user, username=user.username)
+        new_product = Forum(
+            BookName=BookName,
+            bookPicture=bookPicture,
+            userReview=userReview,
+            forumsDescription=forumsDescription,
+            repliesTotal=0, 
+            user=user, 
+            username=user.username)
         
         new_product.save()
 
         return HttpResponse(b"CREATED", status=201)
     return HttpResponseNotFound()
 
+@csrf_exempt 
 def add_replies_ajax(request):
     if request.method == 'POST':
         text = request.POST.get("text")
@@ -181,3 +190,142 @@ def add_replies_ajax(request):
 
         return JsonResponse(response_data, status=201)
     return HttpResponseNotFound()
+
+#Below is function for flutter
+
+@csrf_exempt
+def add_Forum_flutter(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+
+        user = User.objects.get(username=data['username'])
+        # user = UserProfile.objects.get(user=user)
+        print("TEST")
+        new_product = Forum(
+            BookName=data['bookname'],
+            bookPicture='',
+            userReview=data['userReview'],
+            forumsDescription=data['forumsDescription'],
+            repliesTotal=0, 
+            user=user, 
+            username=data['username']
+        )
+        
+        new_product.save()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
+    
+@csrf_exempt
+def add_BookForum_flutter(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+
+        user = User.objects.get(username=data['username'])
+        Userprofile = UserProfile.objects.get(user=user)
+
+        selectedBook = Book.objects.get(id=data["book_id"])
+
+        new_product = Forum(
+            userbook = selectedBook,
+            BookName = selectedBook.title,
+            bookPicture = selectedBook.thumbnail,
+            userReview= data['userReview'],
+            forumsDescription= data['forumsDescription'],
+            repliesTotal=0, 
+            user=user, 
+            username=data['username']
+        )
+        # print(new_product[bookNam])
+        print("TEST")
+        new_product.save()
+
+        # new_product.save()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)    
+
+@csrf_exempt    
+def add_replies_flutter(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        userDjango = User.objects.get(username=data['username'])
+        forum_id = data['forum_id']
+        forumMain = Forum.objects.get(pk=data['forum_id'])
+        forumMain.repliesTotal += 1
+        forumMain.save()
+
+        forum = get_object_or_404(Forum, id=forum_id)
+
+        new_reply = ForumReply(
+            text = data['text'],
+            user=userDjango, 
+            forum=forum, 
+            username=data['username'],
+
+        )
+        new_reply.save()
+
+        # Return the updated repliesTotal value in the response
+        response_data = {
+            'status' : 'success',
+            'repliesTotal': forumMain.repliesTotal
+        }
+
+        return JsonResponse(response_data, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
+    
+@csrf_exempt
+def delete_Forum_Flutter(request):
+    data = json.loads(request.body)
+
+    try:
+        forum = Forum.objects.get(pk=data['forum_id'])
+        forum.delete()
+        return JsonResponse({'message': 'REMOVED'}, status=204)
+    except ForumReply.DoesNotExist:
+        return JsonResponse({'error': 'ForumReply not found'}, status=404)
+
+
+@csrf_exempt
+def delete_Replies_Flutter(request):
+    data = json.loads(request.body)
+    reply_id = data['reply_id']
+    try:
+        forumReplies = ForumReply.objects.get(pk=reply_id)
+
+        # if user.role == 'A':
+        forum = forumReplies.forum
+        if forum.repliesTotal > 0:
+            forum.repliesTotal -= 1
+            forum.save()
+        forumReplies.delete()
+        return JsonResponse({'message': 'REMOVED'}, status=204)
+    except ForumReply.DoesNotExist:
+        return JsonResponse({'error': 'ForumReply not found'}, status=404)
+
+
+def get_ForumReply_json_flutter(request, forum_id):
+    forum_replies = ForumReply.objects.filter(forum=forum_id)
+    serialized_data = serializers.serialize('json', forum_replies)
+    
+    response = HttpResponse(content=serialized_data, content_type='application/json')
+    return response
+
+
+def get_ForumReplyHead_json_flutter(request, forum_id):
+    forum_replies = Forum.objects.filter(id=forum_id)
+    serialized_data = serializers.serialize('json', forum_replies)
+    
+    response = HttpResponse(content=serialized_data, content_type='application/json')
+    return response
+
+def get_Book_flutter(request, forum_id):
+    Book = UserBook.objects.filter(id=forum_id)
+    serialized_data = serializers.serialize('json', Book)
+    
+    response = HttpResponse(content=serialized_data, content_type='application/json')
+    return response
