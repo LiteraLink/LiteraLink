@@ -354,7 +354,8 @@ def create_book_venue(venue, book):
 def rent_book_flutter(request, book_id):
     if request.method == 'POST':
         data = json.loads(request.body)
-        user = UserProfile.objects.get(user=request.user)
+
+        user = UserProfile.objects.get(user__username=data['username'])
 
         book = BookVenue.objects.get(id=book_id)
         book.user = user
@@ -378,6 +379,7 @@ def return_book_flutter(request, venue_id, book_id):
 
         data = json.loads(request.body)
         book = BookVenue.objects.get(id=book_id)
+     
         venue = Venue.objects.get(id=venue_id)
         returned_book = BookVenue(
             venue=venue,
@@ -409,7 +411,8 @@ def add_venue_flutter(request):
         venue_open = request.POST.get("venue_open")
         rent_book = request.POST.get("rent_book")
         return_book = request.POST.get("return_book")
-        map_location = request.FILES.get("map_location")
+        # map_location = request.FILES.get("map_location")
+        map_location = "images/cafe.jpeg"
 
         new_venue = Venue(
             place_name=place_name,
