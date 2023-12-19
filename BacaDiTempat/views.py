@@ -15,6 +15,7 @@ from datetime import datetime
 from random import sample
 from django.template.loader import render_to_string
 from django.contrib.auth.models import User
+from BacaDiTempat.serializers import BookVenueSerializer
 
 @login_required(login_url='auth:signin')
 def show_list_venue(request):
@@ -354,7 +355,7 @@ def create_book_venue(venue, book):
 def rent_book_flutter(request, book_id):
     if request.method == 'POST':
         data = json.loads(request.body)
-
+        
         user = UserProfile.objects.get(user__username=data['username'])
 
         book = BookVenue.objects.get(id=book_id)
@@ -448,39 +449,37 @@ def del_venue_flutter(request):
 def edit_venue_flutter(request, venue_id):
     venue = Venue.objects.get(id=venue_id)
 
-    initial_data = {
-        'place_name': venue.place_name,
-        'address': venue.address,
-        'venue_open': venue.venue_open,
-        'rent_book': venue.rent_book,
-        'return_book': venue.return_book,
-        'map_location': venue.map_location,
-    }
+    if request.method == "POST":
+        try:
+            venue.place_name = request.POST.get("place_name")
+            venue.address = request.POST.get("address")
+            venue.venue_open = request.POST.get("venue_open")
+            venue.rent_book = request.POST.get("rent_book")
+            venue.return_book = request.POST.get("return_book")
+            venue.save()
+            return JsonResponse({"status": "success"}, status=200)
+        except Exception as e:
+            return JsonResponse({"status": "error"}, status=400)
 
-    form = VenueForm(request.POST or None, initial=initial_data, instance=venue)
-
-    if form.is_valid() and request.method == "POST":
-        if 'map_location' in request.FILES:
-            venue.map_location = request.FILES.get("map_location")
-        form.save()
-
-
-    return JsonResponse({"status": "success"}, status=200)
 
 @csrf_exempt
 def book_distribution_json(request, venue_id):
     book = BookVenue.objects.filter(venue = venue_id)
-    return HttpResponse(serializers.serialize("json", book), content_type="application/json")   
+    serializer = BookVenueSerializer()
+    return HttpResponse(serializer.serialize(book), content_type="application/json")   
 
 @csrf_exempt
 def get_product_available(request, venue_id):
     books = BookVenue.objects.filter(venue__id=venue_id, user__isnull=True)
-    return HttpResponse(serializers.serialize('json', books))
+    serializer = BookVenueSerializer()
+    return HttpResponse(serializer.serialize(books))
 
 @csrf_exempt
 def get_product_notavailable(request, venue_id):
     books = BookVenue.objects.filter(venue__id=venue_id, user__isnull=False)
-    return HttpResponse(serializers.serialize('json', books))
+    serializer = BookVenueSerializer()
+
+    return HttpResponse(serializer.serialize(books))
 
 @csrf_exempt
 def get_venue_json(request):
@@ -492,3 +491,8 @@ def get_venue_json(request):
 def show_venue_json(request):
     venue = Venue.objects.all()
     return HttpResponse(serializers.serialize("json", venue), content_type="application/json")
+
+@csrf_exempt
+def show_book_json(request, book_id):
+    data = Book.objects.filter(bookID=book_id)
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")

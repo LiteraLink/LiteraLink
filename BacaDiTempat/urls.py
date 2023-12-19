@@ -31,5 +31,5 @@ urlpatterns = [
     path('get-venue/', views.get_venue_json, name='get_venue_json'),
     path('venue-json/', views.show_venue_json, name='show_venue_json'),
     path('venue-book-json/<int:venue_id>/', views.book_distribution_json, name='venue_book'),
-
+    path('show_book_json/<str:book_id>/', views.show_book_json, name="show_book_json")
 ]
