@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.core import serializers
 from Antar.models import Person, Books
 from main.models import Book
-from authentication.models import UserProfile
+from authentication.models import UserBook, UserProfile
 from Antar.forms import ProductForm
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -119,7 +119,20 @@ def pesan_buku_flutter(request, idBuku, username):
             waktu_pengiriman= timedelta(hours=2),
             status_pesanan = "Dalam Pengiriman",
         )
+        
+        new_book = UserBook.objects.create(
+            person=new_person, 
+            bookID=buku.bookID, 
+            title=buku.title, 
+            authors=buku.authors, 
+            display_authors=buku.display_authors,
+            description=buku.description,
+            categories=buku.categories,
+            thumbnail=buku.thumbnail, 
+            feature="A",
+        )
 
+        new_book.save()
         new_person.save()
 
         return JsonResponse({"status": "success"}, status=200)

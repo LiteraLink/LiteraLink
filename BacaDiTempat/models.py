@@ -28,3 +28,4 @@ class BookVenue(models.Model):
     categories = models.CharField(max_length = 255)
     thumbnail = models.TextField()
     user = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True, default=None)
+
