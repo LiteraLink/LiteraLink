@@ -121,7 +121,7 @@ def pesan_buku_flutter(request, idBuku, username):
         )
         
         new_book = UserBook.objects.create(
-            person=new_person, 
+            user=UserProfile.objects.get(user=User.objects.get(username=username)), 
             bookID=buku.bookID, 
             title=buku.title, 
             authors=buku.authors, 

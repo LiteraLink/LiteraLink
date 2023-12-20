@@ -290,7 +290,7 @@ def book_distribution_json(request, station_id):
 def user_book_json(request, username):
     user = User.objects.get(username=username)
     usera = UserProfile.objects.get(user=user)
-    userb = UserBook.objects.filter(user=usera)
+    userb = UserBook.objects.filter(user=usera, feature = 'DSKS')
     return HttpResponse(serializers.serialize("json", userb), content_type="application/json")
 
 @csrf_exempt

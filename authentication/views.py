@@ -138,11 +138,8 @@ def show_all_profile(request):
     data = User.objects.all()
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
 
-def filter_user(request):
-    abc = []
-    data = User.objects.get(username="marcelinoa").id
-    data = UserProfile.objects.get(user_id=data).id
-    data = UserBook.objects.filter(user_id=data)
-    for d in data:
-        abc.append(d.title)
-    return HttpResponse(abc)
+def show_history(request, username):
+    user = User.objects.get(username=username)
+    usera = UserProfile.objects.get(user=user)
+    data = UserBook.objects.filter(user=usera)
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")

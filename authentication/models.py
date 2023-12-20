@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -9,6 +10,7 @@ class UserProfile(models.Model):
 
 class UserBook(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    date_added = models.DateTimeField(default=timezone.now)
     bookID = models.CharField(max_length = 255)
     title = models.CharField(max_length = 255)
     authors = models.CharField(max_length = 255)

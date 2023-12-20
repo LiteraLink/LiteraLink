@@ -363,6 +363,20 @@ def rent_book_flutter(request, book_id):
         venue_id = book.venue.id
         venue = Venue.objects.get(id=venue_id)
 
+        new_book = UserBook.objects.create(
+            user=UserProfile.objects.get(user=User.objects.get(username=data['username'])), 
+            bookID=book.bookID, 
+            title=book.title, 
+            authors=book.authors, 
+            display_authors=book.display_authors,
+            description=book.description,
+            categories=book.categories,
+            thumbnail=book.thumbnail, 
+            feature="B",
+        )
+
+        new_book.save()
+
         venue.rent_book-=1
         venue.return_book+=1
 
